@@ -1,0 +1,130 @@
+<div id="announce" class="hidden bg-patriot text-white text-sm" role="status">
+  <div class="wrap flex items-center justify-center gap-3 py-2 text-center">
+    <p data-announce-text class="font-medium"></p>
+    <a data-announce-link class="hidden underline underline-offset-2 font-semibold" href="#"></a>
+  </div>
+</div>
+
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent" data-header>
+  <div class="wrap flex h-[4.5rem] lg:h-20 items-center gap-6">
+    <a href="/" class="flex-none -ml-1 p-1 relative z-10" aria-label="Poligoni Patriot — Ballina">
+      <img src="/assets/img/brand/logo-light.webp" alt="Poligoni Patriot" width="454" height="176" class="h-9 lg:h-10 w-auto">
+    </a>
+
+    <nav class="hidden xl:flex flex-1 items-center justify-center" aria-label="Navigimi kryesor">
+      <ul class="flex items-center gap-1 text-[0.95rem] font-medium">
+        <li><a class="nav-link" data-nav="poligoni" href="/poligoni/">Poligoni</a></li>
+        <li><a class="nav-link" data-nav="trajnimet" href="/trajnimet-certifikimet/">Trajnime &amp; certifikime</a></li>
+        <li><a class="nav-link" data-nav="anetaresimet" href="/anetaresimet/">Anëtarësimi</a></li>
+        <li><a class="nav-link" data-nav="dyqani" href="/dyqani/">Dyqani</a></li>
+
+        <li data-menu>
+          <button type="button" class="nav-link inline-flex items-center gap-1" data-nav="sherbimet" aria-expanded="false" aria-controls="m-sherbimet">Shërbimet <svg class="nav-chev size-4 opacity-60" aria-hidden="true"><use href="#i-chev"/></svg></button>
+          <div id="m-sherbimet" class="mega" inert>
+            <div class="wrap mega-grid">
+              <div class="mega-intro">
+                <p class="mega-title">Shërbimet</p>
+                <p class="mega-lead">Nga zgjedhja e armës te mirëmbajtja e saj, me të njëjtin standard sigurie.</p>
+                <a class="mega-call" href="tel:+38349394850" data-setting-href="phone"><svg aria-hidden="true"><use href="#i-phone"/></svg><span class="t-spec" data-setting="phoneDisplay">+383 49 394 850</span></a>
+              </div>
+              <ul class="mega-links" role="list">
+                <li><a class="mega-link" href="/shitjetearmeve/" data-preview="0" style="--i:0"><svg class="mega-ico" aria-hidden="true"><use href="#i-target"/></svg><span><b>Shitja e armëve &amp; aksesorëve</b><small>Armë, municione, optika dhe pajisje taktike</small></span><svg class="mega-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                <li><a class="mega-link" href="/riparimin-e-armeve/" data-preview="1" style="--i:1"><svg class="mega-ico" aria-hidden="true"><use href="#i-wrench"/></svg><span><b>Riparimi i armëve</b><small>Diagnostikim, riparim dhe mirëmbajtje e rregullt</small></span><svg class="mega-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                <li><a class="mega-link" href="/sherbimet/" data-preview="2" style="--i:2"><svg class="mega-ico" aria-hidden="true"><use href="#i-shield"/></svg><span><b>Të gjitha shërbimet</b><small>Poligon, trajnime, shitje dhe servis në një vend</small></span><svg class="mega-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+              </ul>
+              <figure class="mega-media" aria-hidden="true">
+                <img class="is-active" src="/assets/img/gallery/thumbs/g016.webp" alt="" loading="lazy" data-caption="Armë dhe aksesorë nga markat e njohura">
+                <img src="/assets/img/gallery/thumbs/g095.webp" alt="" loading="lazy" data-caption="Servis nga teknikë me përvojë">
+                <img src="/assets/img/gallery/thumbs/g089.webp" alt="" loading="lazy" data-caption="Magjistralja Gjakovë–Prizren, km 2">
+                <figcaption data-media-caption>Armë dhe aksesorë nga markat e njohura</figcaption>
+              </figure>
+            </div>
+          </div>
+        </li>
+
+        <li data-menu>
+          <button type="button" class="nav-link inline-flex items-center gap-1" data-nav="rreth" aria-expanded="false" aria-controls="m-rreth">Rreth nesh <svg class="nav-chev size-4 opacity-60" aria-hidden="true"><use href="#i-chev"/></svg></button>
+          <div id="m-rreth" class="mega" inert>
+            <div class="wrap mega-grid">
+              <div class="mega-intro">
+                <p class="mega-title">Rreth nesh</p>
+                <p class="mega-lead">Poligon, dyqan dhe ekip instruktorësh në Gjakovë.</p>
+                <p class="mega-status" data-open-status></p>
+              </div>
+              <ul class="mega-links" role="list">
+                <li><a class="mega-link" href="/rreth-nesh/" data-preview="0" style="--i:0"><svg class="mega-ico" aria-hidden="true"><use href="#i-card"/></svg><span><b>Kush jemi</b><small>Historia, vlerat dhe ekipi i Poligonit Patriot</small></span><svg class="mega-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                <li><a class="mega-link" href="/galeria/" data-preview="1" style="--i:1"><svg class="mega-ico" aria-hidden="true"><use href="#i-image"/></svg><span><b>Galeria</b><small>Foto nga korsitë, dyqani dhe trajnimet</small></span><svg class="mega-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                <li><a class="mega-link" href="/kontakti/" data-preview="2" style="--i:2"><svg class="mega-ico" aria-hidden="true"><use href="#i-pin"/></svg><span><b>Kontakti</b><small>Adresa, orari dhe formulari i kontaktit</small></span><svg class="mega-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+              </ul>
+              <figure class="mega-media" aria-hidden="true">
+                <img class="is-active" src="/assets/img/gallery/thumbs/g001.webp" alt="" loading="lazy" data-caption="Ekipi i Poligonit Patriot">
+                <img src="/assets/img/gallery/thumbs/g113.webp" alt="" loading="lazy" data-caption="Nga galeria e poligonit">
+                <img src="/assets/img/gallery/thumbs/g089.webp" alt="" loading="lazy" data-caption="E hënë – e shtunë, 09:00 – 22:00">
+                <figcaption data-media-caption>Ekipi i Poligonit Patriot</figcaption>
+              </figure>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="ml-auto xl:ml-0 flex items-center gap-2 relative z-10">
+      <a href="tel:+38349394850" data-setting-href="phone" class="hidden md:inline-flex items-center gap-2 px-3 h-10 text-sm font-semibold text-steel-300 hover:text-bone transition-colors">
+        <svg class="size-[1.1rem]" aria-hidden="true"><use href="#i-phone"/></svg>
+        <span class="t-spec text-[0.95rem]" data-setting="phoneDisplay">+383 49 394 850</span>
+      </a>
+      <a href="/apliko/" class="btn btn-primary btn-sm hidden sm:inline-flex">Apliko për certifikim</a>
+      <button type="button" class="burger xl:hidden" aria-label="Hap menynë" aria-expanded="false" aria-controls="mobile-nav" data-burger>
+        <span class="burger-box" aria-hidden="true"><span class="burger-bar bb-1"></span><span class="burger-bar bb-2"></span><span class="burger-bar bb-3"></span></span>
+      </button>
+    </div>
+  </div>
+  <div class="scroll-progress" data-progress aria-hidden="true"></div>
+</header>
+<div class="nav-scrim" data-scrim aria-hidden="true"></div>
+
+<div id="mobile-nav" class="mnav" hidden data-lenis-prevent>
+  <div class="mnav-bg" aria-hidden="true">
+    <div class="mnav-glow"></div>
+    <svg class="mnav-rings" viewBox="-100 -100 200 200" fill="none" stroke="currentColor">
+      <circle r="98"/><circle r="78"/><circle r="58"/><circle r="38"/><circle r="18"/>
+      <path d="M0 -100V-70M0 70V100M-100 0H-70M70 0H100"/>
+    </svg>
+  </div>
+  <nav class="mnav-inner wrap" aria-label="Navigimi në celular">
+    <ul class="mnav-list" role="list">
+      <li style="--i:0"><a class="m-link" data-nav="poligoni" href="/poligoni/"><span>Poligoni</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+      <li style="--i:1"><a class="m-link" data-nav="trajnimet" href="/trajnimet-certifikimet/"><span>Trajnime &amp; certifikime</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+      <li style="--i:2"><a class="m-link" data-nav="anetaresimet" href="/anetaresimet/"><span>Anëtarësimi</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+      <li style="--i:3"><a class="m-link" data-nav="dyqani" href="/dyqani/"><span>Dyqani</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+      <li style="--i:4">
+        <button type="button" class="m-link" data-nav="sherbimet" aria-expanded="false" aria-controls="mg-sherbimet" data-acc><span>Shërbimet</span><i class="m-plus" aria-hidden="true"></i></button>
+        <div class="m-panel" id="mg-sherbimet"><div>
+          <a href="/shitjetearmeve/">Shitja e armëve &amp; aksesorëve</a>
+          <a href="/riparimin-e-armeve/">Riparimi i armëve</a>
+          <a href="/sherbimet/">Të gjitha shërbimet</a>
+        </div></div>
+      </li>
+      <li style="--i:5">
+        <button type="button" class="m-link" data-nav="rreth" aria-expanded="false" aria-controls="mg-rreth" data-acc><span>Rreth nesh</span><i class="m-plus" aria-hidden="true"></i></button>
+        <div class="m-panel" id="mg-rreth"><div>
+          <a href="/rreth-nesh/">Kush jemi</a>
+          <a href="/galeria/">Galeria</a>
+          <a href="/kontakti/">Kontakti</a>
+        </div></div>
+      </li>
+    </ul>
+
+    <div class="mnav-foot" style="--i:6">
+      <div class="grid grid-cols-2 gap-3">
+        <a href="/apliko/" class="btn btn-primary">Apliko</a>
+        <a href="https://wa.me/38349394850" data-setting-href="whatsapp" class="btn btn-ghost" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
+      </div>
+      <div class="mnav-info">
+        <p data-open-status></p>
+        <a class="t-spec" href="tel:+38349394850" data-setting-href="phone" data-setting="phoneDisplay">+383 49 394 850</a>
+        <p>Magjistralja Gjakovë–Prizren, km 2</p>
+      </div>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,44 @@
+[
+ {
+  "slug": "arme-te-shkurta",
+  "name": "Armë të shkurtra",
+  "description": "Pistoleta dhe revolverë të kalibrave të ndryshëm.",
+  "image": "/assets/img/gallery/thumbs/g113.webp",
+  "sort": 10
+ },
+ {
+  "slug": "arme-te-gjata",
+  "name": "Armë të gjata",
+  "description": "Pushkë gjahu dhe sportive, gjysmë-automatike dhe me shul.",
+  "image": "/assets/img/site/cat-pushka.webp",
+  "sort": 20
+ },
+ {
+  "slug": "shotgune",
+  "name": "Shotgunë",
+  "description": "Modele gjysmë-automatike dhe me pompë për gjueti dhe sport.",
+  "image": "/assets/img/site/cat-shotgun.webp",
+  "sort": 30
+ },
+ {
+  "slug": "municione",
+  "name": "Municione",
+  "description": "Për armë të shkurtra, të gjata, rimfire dhe shotgunë.",
+  "image": "/assets/img/site/municione.webp",
+  "sort": 40
+ },
+ {
+  "slug": "optika",
+  "name": "Optika",
+  "description": "Dylbi, red dot, reflex dhe matës distancash.",
+  "image": "/assets/img/site/cat-optika.webp",
+  "sort": 50
+ },
+ {
+  "slug": "aksesore-veshje-taktike",
+  "name": "Aksesorë & veshje taktike",
+  "description": "Karikatorë, mbajtëse, drita, pastrim, çanta, thika dhe veshje.",
+  "image": "/assets/img/site/cat-taktike.webp",
+  "sort": 60
+ }
+]

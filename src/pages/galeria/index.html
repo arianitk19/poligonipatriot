@@ -1,0 +1,33 @@
+<!--page {
+  "title": "Galeria — Foto nga poligoni, dyqani dhe trajnimet | Poligoni Patriot",
+  "description": "Foto nga korsitë e Poligonit Patriot, armët në dyqan dhe momente nga trajnimet në Gjakovë.",
+  "nav": "rreth",
+  "scripts": ["/assets/js/pages/gallery.js"]
+} -->
+
+<section class="page-hero !pb-10">
+  <div class="wrap flex flex-wrap items-end justify-between gap-8">
+    <div>
+      <nav aria-label="Rruga e navigimit" class="crumbs"><a href="/">Ballina</a> <span aria-hidden="true">/</span> Galeria</nav>
+      <h1 class="t-display mt-6">Galeria</h1>
+    </div>
+    <p class="text-steel-400 max-w-[36ch]">Korsitë, dyqani dhe armët që kalojnë nëpër duart tona. <a class="link-u text-bone" href="https://www.instagram.com/poligoni.patriot/" target="_blank" rel="noopener">Më shumë në Instagram</a>.</p>
+  </div>
+</section>
+
+<section class="pb-24" aria-label="Fotot">
+  <div class="wrap">
+    <ul class="columns-2 md:columns-3 lg:columns-4 gap-3 [&>li]:mb-3" data-gallery>
+      <li class="skel h-72 break-inside-avoid"></li><li class="skel h-96 break-inside-avoid"></li><li class="skel h-64 break-inside-avoid"></li><li class="skel h-80 break-inside-avoid"></li>
+    </ul>
+    <div class="mt-10 flex justify-center"><button type="button" class="btn btn-ghost" data-more hidden>Shfaq më shumë foto</button></div>
+  </div>
+</section>
+
+<dialog class="lightbox" data-lightbox aria-label="Shikuesi i fotove">
+  <img alt="" data-lb-img>
+  <p class="lb-count t-spec" data-lb-count></p>
+  <button type="button" class="lb-btn lb-close" data-lb-close aria-label="Mbyll"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+  <button type="button" class="lb-btn lb-prev" data-lb-prev aria-label="Foto e mëparshme"><svg aria-hidden="true" class="rotate-180"><use href="#i-arrow"/></svg></button>
+  <button type="button" class="lb-btn lb-next" data-lb-next aria-label="Foto tjetër"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+</dialog>

@@ -1,0 +1,26 @@
+<!-- ───────── Vizita: harta, orari, kontakti ───────── -->
+<section class="section-tight border-t border-steel-800" aria-labelledby="h-visit">
+  <div class="wrap grid lg:grid-cols-12 gap-10 items-stretch">
+    <div class="lg:col-span-5 flex flex-col">
+      <h2 id="h-visit" class="t-h2">Na vizitoni</h2>
+      <p class="mt-4 text-steel-300">Magjistralja Gjakovë–Prizren, km 2<br>50000 Gjakovë, Kosovë</p>
+      <dl class="mt-8 border-t border-steel-800 t-spec text-lg">
+        <div class="flex justify-between gap-4 py-3 border-b border-steel-800"><dt class="text-steel-400">E hënë – e shtunë</dt><dd data-setting="hoursWeek">09:00 – 22:00</dd></div>
+        <div class="flex justify-between gap-4 py-3 border-b border-steel-800"><dt class="text-steel-400">E diel</dt><dd data-setting="hoursSunday">Mbyllur</dd></div>
+      </dl>
+      <p class="mt-4 text-sm" data-open-status></p>
+      <div class="mt-auto pt-10 flex flex-wrap gap-3">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=42.36872,20.45724" target="_blank" rel="noopener" class="btn btn-primary"><svg aria-hidden="true"><use href="#i-pin"/></svg>Merr udhëzimet</a>
+        <a href="tel:+38349394850" data-setting-href="phone" class="btn btn-ghost"><svg aria-hidden="true"><use href="#i-phone"/></svg><span data-setting="phoneDisplay">+383 49 394 850</span></a>
+      </div>
+    </div>
+    <div class="lg:col-span-7 relative min-h-[22rem] rounded-lg overflow-hidden bg-steel-900 ring-1 ring-steel-800" data-map>
+      <img src="/assets/img/gallery/g089.webp" alt="Objekti i Poligonit Patriot në Magjistralen Gjakovë–Prizren" loading="lazy" class="absolute inset-0 size-full object-cover opacity-60">
+      <div class="absolute inset-0 bg-gradient-to-t from-steel-950/90 via-steel-950/30 to-transparent"></div>
+      <div class="absolute inset-x-0 bottom-0 p-6 flex flex-wrap items-end justify-between gap-4">
+        <p class="text-sm text-steel-300 max-w-[30ch]">Harta ngarkohet nga Google Maps vetëm kur e hapni.</p>
+        <button type="button" class="btn btn-ghost btn-sm bg-steel-950/60 backdrop-blur" data-map-load>Shfaq hartën</button>
+      </div>
+    </div>
+  </div>
+</section>

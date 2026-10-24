@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="sq">
+<head>
+{{> head}}
+</head>
+<body class="{{bodyClass}}">
+{{> icons}}
+<div class="intro" aria-hidden="true" data-intro><div class="intro-inner"><img src="/assets/img/brand/logo-light.webp" alt="" width="454" height="176"><div class="intro-bar"></div></div></div>
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-bone focus:text-ink focus:px-4 focus:py-2 focus:rounded">Kalo te përmbajtja</a>
+{{> header}}
+<main id="main">
+{{content}}
+</main>
+{{> footer}}
+<script src="/assets/vendor/lenis.min.js" defer></script>
+<script type="module" src="/assets/js/app.js"></script>
+<script type="module" src="/assets/js/motion.js"></script>
+<script type="module" src="/assets/js/dock.js"></script>
+{{scripts}}
+</body>
+</html>

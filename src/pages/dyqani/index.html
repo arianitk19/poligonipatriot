@@ -1,0 +1,65 @@
+<!--page {
+  "title": "Dyqani — Armë, municione, optika dhe aksesorë | Poligoni Patriot",
+  "description": "Katalogu i armëve në Poligonin Patriot: Glock, CZ, Beretta, Sig Sauer, Canik, Smith & Wesson e të tjera. Kërkoni sipas markës, kalibrit dhe kategorisë.",
+  "nav": "dyqani",
+  "scripts": ["/assets/js/pages/catalog.js"]
+} -->
+
+<section class="page-hero !pb-10">
+  <div class="wrap flex flex-wrap items-end justify-between gap-8">
+    <div>
+      <nav aria-label="Rruga e navigimit" class="crumbs"><a href="/">Ballina</a> <span aria-hidden="true">/</span> Dyqani</nav>
+      <h1 class="t-display mt-6" data-cat-title>Dyqani</h1>
+    </div>
+    <p class="text-steel-400 max-w-[40ch]" data-cat-desc>Çmimi dhe disponueshmëria konfirmohen në dyqan ose në telefon. Armët shiten vetëm sipas ligjit.</p>
+  </div>
+</section>
+
+<section class="pb-24" aria-label="Katalogu">
+  <div class="wrap">
+    <div class="sticky-filter sticky top-[4.5rem] lg:top-20 z-30 -mx-4 px-4 py-4 bg-steel-950/90 backdrop-blur border-b border-steel-800">
+      <div class="flex gap-2 overflow-x-auto [scrollbar-width:none]" role="toolbar" aria-label="Kategoritë" data-cats>
+        <button type="button" class="chip" aria-pressed="true" data-cat="">Të gjitha</button>
+      </div>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_12rem_12rem_13rem]">
+        <label class="relative">
+          <span class="sr-only">Kërko</span>
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 size-5 text-steel-400 pointer-events-none" aria-hidden="true"><use href="#i-search"/></svg>
+          <input class="input !min-h-11 !pl-11" type="search" placeholder="Kërko modelin, markën, kalibrin…" data-q autocomplete="off">
+        </label>
+        <label><span class="sr-only">Marka</span><select class="input !min-h-11" data-brand><option value="">Të gjitha markat</option></select></label>
+        <label><span class="sr-only">Kalibri</span><select class="input !min-h-11" data-caliber><option value="">Të gjithë kalibrat</option></select></label>
+        <label><span class="sr-only">Renditja</span><select class="input !min-h-11" data-sort>
+          <option value="">Të rekomanduarat</option>
+          <option value="name">Emri A–Z</option>
+          <option value="price-asc">Çmimi: nga më i ulëti</option>
+          <option value="price-desc">Çmimi: nga më i larti</option>
+        </select></label>
+      </div>
+    </div>
+
+    <div class="mt-8 flex items-center justify-between gap-4 text-sm text-steel-400">
+      <p aria-live="polite" data-count>Duke ngarkuar…</p>
+      <button type="button" class="link-u hidden" data-reset>Pastro filtrat</button>
+    </div>
+
+    <ul class="mt-6 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10" data-grid>
+      <li class="skel aspect-[4/5]"></li><li class="skel aspect-[4/5]"></li><li class="skel aspect-[4/5]"></li><li class="skel aspect-[4/5]"></li>
+    </ul>
+
+    <div class="hidden mt-6 rounded-lg border border-steel-800 p-10 text-center" data-empty>
+      <h2 class="t-h3">Nuk gjetëm asnjë produkt</h2>
+      <p class="mt-3 text-steel-400 max-w-[46ch] mx-auto">Provoni një kërkim tjetër ose pastroni filtrat. Nëse kërkoni një model specifik, na shkruani dhe ju tregojmë nëse mund ta sigurojmë.</p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <button type="button" class="btn btn-ghost btn-sm" data-reset>Pastro filtrat</button>
+        <a href="https://wa.me/38349394850" data-setting-href="whatsapp" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Pyet në WhatsApp</a>
+      </div>
+    </div>
+
+    <aside class="mt-20 rounded-lg bg-steel-900 border border-steel-800 p-6 lg:p-8 grid lg:grid-cols-[auto_1fr_auto] gap-6 items-center">
+      <svg class="size-9 text-patriot" aria-hidden="true"><use href="#i-shield"/></svg>
+      <p class="text-steel-300 max-w-[70ch]">Shitja e armëve bëhet vetëm për persona që plotësojnë kushtet e Ligjit për armët në Republikën e Kosovës. Për çmimin dhe disponueshmërinë na kontaktoni ose vizitoni dyqanin.</p>
+      <a href="/trajnimet-certifikimet/" class="btn btn-ghost btn-sm">Si të pajisem me leje</a>
+    </aside>
+  </div>
+</section>

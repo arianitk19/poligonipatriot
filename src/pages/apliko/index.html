@@ -1,0 +1,85 @@
+<!--page {
+  "title": "Apliko për certifikim — Armë të shkurtra dhe të gjata | Poligoni Patriot",
+  "description": "Aplikimi online për trajnimin dhe certifikimin profesional për armë të shkurtra dhe të gjata. Plotësoni formularin dhe ngarkoni letërnjoftimin; ju kontaktojmë për orarin.",
+  "nav": "trajnimet",
+  "scripts": ["/assets/js/pages/apply.js"]
+} -->
+
+<section class="page-hero !pb-12">
+  <div class="wrap grid lg:grid-cols-12 gap-10 items-end">
+    <div class="lg:col-span-8">
+      <nav aria-label="Rruga e navigimit" class="crumbs"><a href="/">Ballina</a> <span aria-hidden="true">/</span> <a href="/trajnimet-certifikimet/">Trajnime &amp; certifikime</a> <span aria-hidden="true">/</span> Apliko</nav>
+      <h1 class="t-h1 mt-6 max-w-[18ch]">Aplikimi për certifikim profesional</h1>
+    </div>
+    <p class="lg:col-span-4 text-steel-300">Certifikimi teorik dhe praktik është baza për këdo që synon të pajiset me leje për armë të shkurtra ose të gjata.</p>
+  </div>
+</section>
+
+<section class="pb-24" aria-label="Formulari i aplikimit">
+  <div class="wrap grid lg:grid-cols-12 gap-12 lg:gap-16">
+    <div class="lg:col-span-7">
+      <form class="grid gap-10" novalidate data-apply-form>
+        <fieldset class="grid gap-6">
+          <legend class="t-h3 mb-6">Të dhënat personale</legend>
+          <label class="field"><span>Emri dhe mbiemri *</span><input class="input" name="full_name" autocomplete="name" required maxlength="120" placeholder="Si në letërnjoftim"></label>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <label class="field"><span>Numri personal (letërnjoftimi) *</span><input class="input t-spec" name="id_number" required inputmode="numeric" maxlength="20" placeholder="10 shifra" autocomplete="off"></label>
+            <label class="field"><span>Telefoni *</span><input class="input" name="phone" type="tel" autocomplete="tel" required maxlength="40" placeholder="+383 4X XXX XXX"></label>
+          </div>
+          <label class="field"><span>Emaili *</span><input class="input" name="email" type="email" autocomplete="email" required maxlength="160" placeholder="emri@shembull.com"></label>
+        </fieldset>
+
+        <fieldset class="grid gap-3">
+          <legend class="t-h3 mb-6">Programi *</legend>
+          <label class="check"><input type="radio" name="program" value="shkurtra" required><span><b class="block font-semibold">Armë të shkurtra</b><span class="text-sm text-steel-400">Pistoleta dhe revolverë</span></span></label>
+          <label class="check"><input type="radio" name="program" value="gjata"><span><b class="block font-semibold">Armë të gjata</b><span class="text-sm text-steel-400">Pushkë dhe shotgunë</span></span></label>
+          <label class="check"><input type="radio" name="program" value="te-dyja"><span><b class="block font-semibold">Armë të shkurtra dhe të gjata</b><span class="text-sm text-steel-400">Programi i plotë</span></span></label>
+          <p class="field-error" data-error-for="program" hidden>Zgjidhni programin.</p>
+        </fieldset>
+
+        <fieldset class="grid gap-6">
+          <legend class="t-h3 mb-2">Letërnjoftimi *</legend>
+          <p class="text-sm text-steel-400 -mt-2">Fotografi të qarta ose PDF, deri në 5 MB secila. Fotot e mëdha kompresohen automatikisht.</p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="drop" data-drop>
+              <input type="file" name="front" accept="image/jpeg,image/png,image/webp,application/pdf" required class="sr-only">
+              <span class="drop-ui"><svg aria-hidden="true"><use href="#i-card"/></svg><b>Ana e parë</b><small data-file-name>Zgjidhni ose tërhiqni skedarin</small></span>
+            </label>
+            <label class="drop" data-drop>
+              <input type="file" name="back" accept="image/jpeg,image/png,image/webp,application/pdf" required class="sr-only">
+              <span class="drop-ui"><svg aria-hidden="true"><use href="#i-card"/></svg><b>Ana e pasme</b><small data-file-name>Zgjidhni ose tërhiqni skedarin</small></span>
+            </label>
+          </div>
+          <p class="field-error" data-error-for="files" hidden></p>
+        </fieldset>
+
+        <label class="field"><span>Mesazh (opsional)</span><textarea class="input" name="message" maxlength="2000" placeholder="P.sh. ditët që ju përshtaten më mirë"></textarea></label>
+        <label class="hp" aria-hidden="true">Mos e plotësoni këtë fushë<input name="website" tabindex="-1" autocomplete="off"></label>
+
+        <label class="check"><input type="checkbox" name="consent" required><span class="text-sm text-steel-300">Pajtohem që Poligoni Patriot të përpunojë të dhënat dhe dokumentet e mia vetëm për procesin e trajnimit dhe certifikimit, sipas <a class="link-u text-bone" href="/privatesia/" target="_blank">politikës së privatësisë</a>. *</span></label>
+        <p class="field-error -mt-8" data-error-for="consent" hidden>Duhet të pajtoheni për të vazhduar.</p>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <button class="btn btn-primary" type="submit">Dërgo aplikimin</button>
+          <p class="text-sm text-steel-400" data-progress aria-live="polite"></p>
+        </div>
+        <p class="field-error" data-form-error hidden></p>
+      </form>
+
+      <div class="form-done" data-done hidden tabindex="-1">
+        <svg class="size-12 text-patriot" aria-hidden="true"><use href="#i-check"/></svg>
+        <h2 class="t-h2 mt-6">Aplikimi u pranua</h2>
+        <p class="mt-4 text-steel-300 max-w-[46ch]">Faleminderit. Do t'ju telefonojmë për të caktuar grupin dhe datat e trajnimit. Nëse keni pyetje, na shkruani në WhatsApp.</p>
+        <a href="https://wa.me/38349394850" data-setting-href="whatsapp" target="_blank" rel="noopener" class="btn btn-ghost mt-8"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
+      </div>
+    </div>
+
+    <aside class="lg:col-span-5">
+      <div class="lg:sticky lg:top-28 grid gap-6">
+        <h2 class="t-h3">Pas aplikimit</h2>
+        {{> cert-steps}}
+        <p class="text-sm text-steel-400 flex gap-3"><svg class="size-5 flex-none text-steel-300" aria-hidden="true"><use href="#i-shield"/></svg>Dokumentet ruhen në hapësirë të mbyllur, të qasshme vetëm nga administrata, dhe nuk ndahen me palë të treta.</p>
+      </div>
+    </aside>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+{
+  "name": "poligonipatriot-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Poligoni Patriot — faqja e re (HTML, Tailwind CSS, vanilla JS, Supabase)",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs --clean && npx @tailwindcss/cli -i src/styles/app.css -o dist/assets/css/app.css --minify",
+    "preview": "node scripts/dev.mjs --no-watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}
