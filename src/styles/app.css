@@ -1060,3 +1060,74 @@ html.lenis, html.lenis body { height: auto; }
   @keyframes pv-in { from { opacity: 0; transform: scale(0.94) translateY(12px); } to { opacity: 1; transform: none; } }
   @keyframes pv-btn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: none; } }
 }
+
+/* ═════════════ Trajnime: nga aplikimi te certifikata (ilustrim i animuar) ═════════════ */
+@layer components {
+  .cert-art { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 0.9rem; border: 1px solid rgb(255 255 255 / 0.08); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 40px 80px -50px #000;
+    background:
+      radial-gradient(60% 70% at 45% 40%, rgb(227 52 59 / 0.16), transparent 70%),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgb(255 255 255 / 0.03) 31px 32px),
+      repeating-linear-gradient(0deg, transparent 0 31px, rgb(255 255 255 / 0.03) 31px 32px), #0c0c0e; }
+  .cert-svg { position: absolute; inset: 0; width: 100%; height: 100%; font-family: var(--font-sans); }
+  .cert-svg .ct-t { font-stretch: 110%; }
+  .ct-paper-g { animation: ct-float 6s ease-in-out infinite alternate; transform-box: view-box; }
+  @keyframes ct-float { from { transform: translateY(3px); } to { transform: translateY(-4px); } }
+  .ct-sheet { animation: ct-float 7s ease-in-out -2s infinite alternate-reverse; }
+
+  /* afati: 10s — 1 aplikimi · 2 teoria · 3 praktika · 4 certifikata */
+  .ct-progress { transform: scaleX(0); animation: ct-progress 10s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+  @keyframes ct-progress { 0%, 6% { transform: scaleX(0); } 22%, 26% { transform: scaleX(0.3226); } 42%, 46% { transform: scaleX(0.7258); } 60%, 90% { transform: scaleX(1); } 97%, 100% { transform: scaleX(0); } }
+  .ct-node-dot { transition: none; animation: var(--na) 10s ease infinite; }
+  .ct-check { stroke-dasharray: 1; stroke-dashoffset: 1; animation: var(--nc) 10s ease infinite; }
+  .ct-num { animation: var(--nn) 10s ease infinite; }
+  .ct-label { fill-opacity: 0.45; animation: var(--nl) 10s ease infinite; }
+  .ct-node-ring { transform-box: fill-box; transform-origin: center; opacity: 0; animation: var(--nr) 10s ease-out infinite; }
+  .ct-node-0 { --na: ct-a0; --nc: ct-c0; --nn: ct-n0; --nl: ct-l0; --nr: ct-r0; }
+  .ct-node-1 { --na: ct-a1; --nc: ct-c1; --nn: ct-n1; --nl: ct-l1; --nr: ct-r1; }
+  .ct-node-2 { --na: ct-a2; --nc: ct-c2; --nn: ct-n2; --nl: ct-l2; --nr: ct-r2; }
+  .ct-node-3 { --na: ct-a3; --nc: ct-c3; --nn: ct-n3; --nl: ct-l3; --nr: ct-r3; }
+
+  /* lëvizjet e fletës: rreshtat (teoria), goditjet (praktika), nënshkrimi dhe vula (certifikata) */
+  .ct-line { transform-box: fill-box; transform-origin: left; transform: scaleX(0); animation: ct-line 10s cubic-bezier(0.3, 0.7, 0.2, 1) var(--d) infinite; }
+  @keyframes ct-line { 0%, 24% { transform: scaleX(0); opacity: 0; } 25% { opacity: 1; } 34%, 90% { transform: scaleX(1); opacity: 1; } 95.5% { opacity: 0; } 96%, 100% { transform: scaleX(0); opacity: 0; } }
+  .ct-hole { opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .ct-hole-0 { animation: ct-hole0 10s cubic-bezier(0.2, 1.5, 0.4, 1) infinite; }
+  .ct-hole-1 { animation: ct-hole1 10s cubic-bezier(0.2, 1.5, 0.4, 1) infinite; }
+  .ct-hole-2 { animation: ct-hole2 10s cubic-bezier(0.2, 1.5, 0.4, 1) infinite; }
+  @keyframes ct-hole0 { 0%, 46% { opacity: 0; transform: scale(0); } 48%, 92% { opacity: 1; transform: scale(1); } 97%, 100% { opacity: 0; } }
+  @keyframes ct-hole1 { 0%, 50% { opacity: 0; transform: scale(0); } 52%, 92% { opacity: 1; transform: scale(1); } 97%, 100% { opacity: 0; } }
+  @keyframes ct-hole2 { 0%, 54% { opacity: 0; transform: scale(0); } 56%, 92% { opacity: 1; transform: scale(1); } 97%, 100% { opacity: 0; } }
+  .ct-sign { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ct-sign 10s ease-in-out infinite; }
+  @keyframes ct-sign { 0%, 60% { stroke-dashoffset: 1; opacity: 0; } 61% { opacity: 1; } 70%, 92% { stroke-dashoffset: 0; opacity: 1; } 96% { opacity: 0; } 97%, 100% { stroke-dashoffset: 1; opacity: 0; } }
+  .ct-seal { opacity: 0; animation: ct-seal 10s cubic-bezier(0.3, 1.6, 0.5, 1) infinite; }
+  @keyframes ct-seal { 0%, 70% { opacity: 0; transform: scale(1.9) rotate(-25deg); } 74% { opacity: 1; transform: scale(1) rotate(-8deg); } 76%, 92% { opacity: 1; transform: scale(1) rotate(-8deg); } 97%, 100% { opacity: 0; transform: scale(1) rotate(-8deg); } }
+  .ct-ripple { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ct-ripple 10s ease-out infinite; }
+  @keyframes ct-ripple { 0%, 73.5% { opacity: 0; transform: scale(1); } 74% { opacity: 0.9; transform: scale(1); } 84%, 100% { opacity: 0; transform: scale(2.6); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cert-svg * { animation: none !important; }
+  .ct-progress, .ct-line { transform: none; } .ct-check, .ct-sign { stroke-dashoffset: 0; } .ct-seal, .ct-hole { opacity: 1; transform: none; } .ct-num { opacity: 0; }
+}
+
+@layer components {
+  @keyframes ct-a0 { 0%, 4% { fill: #1a1a1d; } 6%, 90% { fill: #e3343b; } 96%, 100% { fill: #1a1a1d; } }
+  @keyframes ct-c0 { 0%, 4% { stroke-dashoffset: 1; opacity: 0; } 5% { opacity: 1; } 8%, 90% { stroke-dashoffset: 0; opacity: 1; } 94% { opacity: 0; } 95%, 100% { stroke-dashoffset: 1; opacity: 0; } }
+  @keyframes ct-n0 { 0%, 4% { opacity: 1; } 6%, 90% { opacity: 0; } 96%, 100% { opacity: 1; } }
+  @keyframes ct-l0 { 0%, 4% { fill-opacity: .45; } 6%, 90% { fill-opacity: 1; } 96%, 100% { fill-opacity: .45; } }
+  @keyframes ct-r0 { 0%, 4% { opacity: 0; transform: scale(.7); } 6% { opacity: .9; transform: scale(.75); } 16%, 100% { opacity: 0; transform: scale(1.9); } }
+  @keyframes ct-a1 { 0%, 24% { fill: #1a1a1d; } 26%, 90% { fill: #e3343b; } 96%, 100% { fill: #1a1a1d; } }
+  @keyframes ct-c1 { 0%, 24% { stroke-dashoffset: 1; opacity: 0; } 25% { opacity: 1; } 28%, 90% { stroke-dashoffset: 0; opacity: 1; } 94% { opacity: 0; } 95%, 100% { stroke-dashoffset: 1; opacity: 0; } }
+  @keyframes ct-n1 { 0%, 24% { opacity: 1; } 26%, 90% { opacity: 0; } 96%, 100% { opacity: 1; } }
+  @keyframes ct-l1 { 0%, 24% { fill-opacity: .45; } 26%, 90% { fill-opacity: 1; } 96%, 100% { fill-opacity: .45; } }
+  @keyframes ct-r1 { 0%, 24% { opacity: 0; transform: scale(.7); } 26% { opacity: .9; transform: scale(.75); } 36%, 100% { opacity: 0; transform: scale(1.9); } }
+  @keyframes ct-a2 { 0%, 44% { fill: #1a1a1d; } 46%, 90% { fill: #e3343b; } 96%, 100% { fill: #1a1a1d; } }
+  @keyframes ct-c2 { 0%, 44% { stroke-dashoffset: 1; opacity: 0; } 45% { opacity: 1; } 48%, 90% { stroke-dashoffset: 0; opacity: 1; } 94% { opacity: 0; } 95%, 100% { stroke-dashoffset: 1; opacity: 0; } }
+  @keyframes ct-n2 { 0%, 44% { opacity: 1; } 46%, 90% { opacity: 0; } 96%, 100% { opacity: 1; } }
+  @keyframes ct-l2 { 0%, 44% { fill-opacity: .45; } 46%, 90% { fill-opacity: 1; } 96%, 100% { fill-opacity: .45; } }
+  @keyframes ct-r2 { 0%, 44% { opacity: 0; transform: scale(.7); } 46% { opacity: .9; transform: scale(.75); } 56%, 100% { opacity: 0; transform: scale(1.9); } }
+  @keyframes ct-a3 { 0%, 58% { fill: #1a1a1d; } 60%, 90% { fill: #e3343b; } 96%, 100% { fill: #1a1a1d; } }
+  @keyframes ct-c3 { 0%, 58% { stroke-dashoffset: 1; opacity: 0; } 59% { opacity: 1; } 62%, 90% { stroke-dashoffset: 0; opacity: 1; } 94% { opacity: 0; } 95%, 100% { stroke-dashoffset: 1; opacity: 0; } }
+  @keyframes ct-n3 { 0%, 58% { opacity: 1; } 60%, 90% { opacity: 0; } 96%, 100% { opacity: 1; } }
+  @keyframes ct-l3 { 0%, 58% { fill-opacity: .45; } 60%, 90% { fill-opacity: 1; } 96%, 100% { fill-opacity: .45; } }
+  @keyframes ct-r3 { 0%, 58% { opacity: 0; transform: scale(.7); } 60% { opacity: .9; transform: scale(.75); } 70%, 100% { opacity: 0; transform: scale(1.9); } }
+}
