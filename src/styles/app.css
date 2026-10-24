@@ -1028,3 +1028,35 @@ html.lenis, html.lenis body { height: auto; }
   .dock-note a:hover { color: #fff; }
   .dock-form { padding-bottom: 0.6rem; }
 }
+
+/* ═════════════ Shikuesi i fotos së produktit ═════════════ */
+@layer components {
+  html.pv-open { overflow: hidden; }
+  html.pv-open .dock, html.pv-open .bullet-top, html.pv-open .cursor, html.pv-open .cursor-dot { display: none; }
+  .pv { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: clamp(4.5rem, 8vh, 6rem) clamp(1rem, 5vw, 5rem) clamp(5rem, 10vh, 6.5rem); border: 0; background: rgb(8 8 9 / 0.86); backdrop-filter: blur(18px) saturate(120%); -webkit-backdrop-filter: blur(18px) saturate(120%); color: var(--color-bone); animation: pv-fade 0.35s ease both; }
+  .pv[open] { display: grid; place-items: center; }
+  .pv::backdrop { background: transparent; }
+  .pv.is-closing { animation: pv-fade-out 0.28s ease forwards; }
+  .pv-stage { display: grid; place-items: center; width: 100%; height: 100%; min-height: 0; }
+  .pv-stage img { width: auto; height: auto; max-width: min(100%, 1400px); max-height: calc(100dvh - clamp(4.5rem, 8vh, 6rem) - clamp(5rem, 10vh, 6.5rem)); object-fit: contain; padding: clamp(1rem, 3vw, 2.5rem); border-radius: 1rem; background: radial-gradient(120% 95% at 50% 40%, #ffffff 0%, #ffffff 55%, #ececee 100%); box-shadow: 0 50px 120px -40px rgb(0 0 0 / 0.95), 0 0 0 1px rgb(255 255 255 / 0.08); animation: pv-in 0.55s var(--ease-out-expo) both; transition: opacity 0.16s ease, transform 0.3s var(--ease-out-expo); cursor: default; }
+  .pv-stage img.is-swap { opacity: 0; transform: scale(0.98); }
+  .pv.is-closing .pv-stage img { transform: scale(0.96); opacity: 0; transition: opacity 0.25s ease, transform 0.28s ease; }
+  .pv-close { position: fixed; top: max(1rem, env(safe-area-inset-top)); right: max(1rem, env(safe-area-inset-right)); display: inline-grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 999px; color: #fff; background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.18); box-shadow: 0 10px 30px -12px #000; transition: background-color 0.3s, border-color 0.3s, transform 0.5s var(--ease-out-expo); animation: pv-btn 0.5s var(--ease-out-expo) 0.1s both; }
+  .pv-close svg { width: 1.3rem; height: 1.3rem; transition: transform 0.5s var(--ease-out-expo); }
+  .pv-close:hover, .pv-close:focus-visible { background: var(--color-patriot); border-color: var(--color-patriot); transform: scale(1.06); }
+  .pv-close:hover svg { transform: rotate(90deg); }
+  .pv-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .pv-nav { position: fixed; top: 50%; translate: 0 -50%; display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 999px; color: #fff; background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.16); transition: background-color 0.3s, border-color 0.3s; }
+  .pv-nav:hover { background: rgb(255 255 255 / 0.16); border-color: rgb(255 255 255 / 0.3); }
+  .pv-nav svg { width: 1.2rem; height: 1.2rem; }
+  .pv-prev { left: max(1rem, env(safe-area-inset-left)); } .pv-prev svg { transform: rotate(180deg); }
+  .pv-next { right: max(1rem, env(safe-area-inset-right)); }
+  .pv-bar { position: fixed; left: 0; right: 0; bottom: max(1.25rem, env(safe-area-inset-bottom)); display: flex; justify-content: center; align-items: center; gap: 0.9rem; pointer-events: none; animation: pv-btn 0.5s var(--ease-out-expo) 0.15s both; }
+  .pv-name { font-weight: 650; font-size: 0.95rem; }
+  .pv-count { padding: 0.2rem 0.6rem; border-radius: 999px; background: rgb(255 255 255 / 0.1); font-size: 0.8rem; color: var(--color-steel-300); font-variant-numeric: tabular-nums; }
+  @media (max-width: 40rem) { .pv-nav { top: auto; translate: none; bottom: max(1rem, env(safe-area-inset-bottom)); } .pv-bar { bottom: max(1.9rem, env(safe-area-inset-bottom)); } }
+  @keyframes pv-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pv-fade-out { to { opacity: 0; } }
+  @keyframes pv-in { from { opacity: 0; transform: scale(0.94) translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes pv-btn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: none; } }
+}

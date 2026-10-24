@@ -65,7 +65,69 @@ function render(p, cat, settings) {
     box.querySelectorAll('[data-thumb]').forEach((x) => x.classList.replace('ring-bone', 'ring-transparent'));
     b.classList.replace('ring-transparent', 'ring-bone');
   }));
-  box.querySelector('[data-main]')?.addEventListener('click', () => { if (main) window.open(main.src, '_blank', 'noopener'); });
+  let current = 0;
+  box.querySelectorAll('[data-thumb]').forEach((b) => b.addEventListener('click', () => { current = Number(b.dataset.thumb); }));
+  const mainBox = box.querySelector('[data-main]');
+  if (main && mainBox) {
+    mainBox.setAttribute('role', 'button');
+    mainBox.setAttribute('tabindex', '0');
+    mainBox.setAttribute('aria-label', `Zmadho foton e ${p.name}`);
+    const show = () => openViewer(imgs, current, p.name);
+    mainBox.addEventListener('click', show);
+    mainBox.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); } });
+  }
+}
+
+/* Shikuesi i fotos: hapet mbi faqe dhe mbyllet me X, Escape, klikim jashtë ose rrëshqitje poshtë */
+function openViewer(imgs, start, name) {
+  let i = start;
+  const d = document.createElement('dialog');
+  d.className = 'pv';
+  d.setAttribute('aria-label', `Fotot e ${name}`);
+  d.setAttribute('data-lenis-prevent', '');
+  const many = imgs.length > 1;
+  d.innerHTML = `
+    <div class="pv-stage" data-stage>
+      <img src="${esc(imgs[i])}" alt="${esc(name)}" data-img>
+    </div>
+    <div class="pv-bar">
+      <span class="pv-name">${esc(name)}</span>
+      ${many ? `<span class="pv-count" data-count>${i + 1} / ${imgs.length}</span>` : ''}
+    </div>
+    <button type="button" class="pv-close" aria-label="Mbyll" data-close><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    ${many ? `<button type="button" class="pv-nav pv-prev" aria-label="Foto e mëparshme" data-prev><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    <button type="button" class="pv-nav pv-next" aria-label="Foto tjetër" data-next><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>` : ''}`;
+  document.body.append(d);
+  const img = d.querySelector('[data-img]');
+  const go = (n) => {
+    if (!many) return;
+    i = (n + imgs.length) % imgs.length;
+    img.classList.add('is-swap');
+    setTimeout(() => { img.src = imgs[i]; img.classList.remove('is-swap'); d.querySelector('[data-count]').textContent = `${i + 1} / ${imgs.length}`; }, 160);
+  };
+  const close = () => {
+    if (d.classList.contains('is-closing')) return;
+    d.classList.add('is-closing');
+    setTimeout(() => { d.close(); d.remove(); window.ppLenis?.start(); document.documentElement.classList.remove('pv-open'); }, 280);
+  };
+  d.querySelector('[data-close]').addEventListener('click', close);
+  d.querySelector('[data-prev]')?.addEventListener('click', () => go(i - 1));
+  d.querySelector('[data-next]')?.addEventListener('click', () => go(i + 1));
+  d.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+  d.addEventListener('click', (e) => { if (e.target === d || e.target.hasAttribute('data-stage')) close(); });
+  d.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') go(i - 1); if (e.key === 'ArrowRight') go(i + 1); });
+  // rrëshqitje me gisht: majtas/djathtas ndërron foton, poshtë mbyll
+  let sx = 0, sy = 0;
+  d.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  d.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? i + 1 : i - 1);
+    else if (dy > 80) close();
+  });
+  window.ppLenis?.stop();
+  document.documentElement.classList.add('pv-open');
+  d.showModal();
+  d.querySelector('[data-close]').focus({ preventScroll: true });
 }
 
 async function init() {
