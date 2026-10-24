@@ -1131,3 +1131,51 @@ html.lenis, html.lenis body { height: auto; }
   @keyframes ct-l3 { 0%, 58% { fill-opacity: .45; } 60%, 90% { fill-opacity: 1; } 96%, 100% { fill-opacity: .45; } }
   @keyframes ct-r3 { 0%, 58% { opacity: 0; transform: scale(.7); } 60% { opacity: .9; transform: scale(.75); } 70%, 100% { opacity: 0; transform: scale(1.9); } }
 }
+
+/* ═════════════ Dy poligonet v2: minimaliste ═════════════ */
+@layer components {
+  .range-card:has(.rs2) .range-art { background: radial-gradient(80% 90% at 50% 45%, #141416, #0b0b0c 75%); }
+  .rs2 { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* brenda: kornizat afrohen pa ndalim */
+  .r2-frame { transform-origin: 240px 128px; opacity: 0; animation: r2-frame 9.1s linear infinite; animation-delay: calc(var(--i) * -1.3s); }
+  @keyframes r2-frame {
+    0% { transform: scale(0.085); opacity: 0; }
+    25% { transform: scale(0.178); opacity: 0.16; }
+    50% { transform: scale(0.369); opacity: 0.26; }
+    75% { transform: scale(0.768); opacity: 0.2; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+  .r2-bull { transform-box: fill-box; transform-origin: center; animation: r2-bull 3s ease-in-out infinite; }
+  @keyframes r2-bull { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; filter: drop-shadow(0 0 3px #e3343b); } }
+  /* jashtë: terreni rrjedh drejt nesh */
+  .r2-row { transform-origin: 240px 118px; opacity: 0; animation: r2-row 10.5s linear infinite; animation-delay: calc(var(--i) * -1.5s); }
+  @keyframes r2-row {
+    0% { transform: scale(0.03); opacity: 0; }
+    25% { transform: scale(0.076); opacity: 0.12; }
+    50% { transform: scale(0.194); opacity: 0.18; }
+    75% { transform: scale(0.492); opacity: 0.16; }
+    100% { transform: scale(1.25); opacity: 0; }
+  }
+  /* shënjestra kalon nga një objektiv te tjetri dhe "kyçet" */
+  .r2-reticle { animation: r2-move 12s cubic-bezier(0.7, 0, 0.25, 1) infinite; }
+  @keyframes r2-move {
+    0%, 30% { transform: translate(172px, 116.8px) scale(1); }
+    38%, 63% { transform: translate(306px, 115px) scale(0.75); }
+    71%, 92% { transform: translate(236px, 114.8px) scale(0.55); }
+    100% { transform: translate(172px, 116.8px) scale(1); }
+  }
+  .r2-ret-in { animation: r2-lock 4s ease-out infinite; animation-delay: -0.4s; }
+  @keyframes r2-lock { 0%, 8% { transform: scale(1.5) rotate(45deg); opacity: 0.4; } 22% { transform: scale(1) rotate(0); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5) rotate(45deg); opacity: 0.4; } }
+  .r2-hit { opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .r2-hit-0 { animation: r2-hit0 12s ease-out infinite; }
+  .r2-hit-1 { animation: r2-hit1 12s ease-out infinite; }
+  .r2-hit-2 { animation: r2-hit2 12s ease-out infinite; }
+  @keyframes r2-hit0 { 0%, 9% { opacity: 0; } 10% { opacity: 1; } 28%, 100% { opacity: 0; } }
+  @keyframes r2-hit1 { 0%, 45% { opacity: 0; } 46% { opacity: 1; } 62%, 100% { opacity: 0; } }
+  @keyframes r2-hit2 { 0%, 78% { opacity: 0; } 79% { opacity: 1; } 92%, 100% { opacity: 0; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .r2-frame, .r2-row { animation: none !important; opacity: 0.15; }
+  .r2-frame { transform: scale(0.37); } .r2-row { transform: scale(0.19); }
+  .r2-reticle { animation: none !important; transform: translate(172px, 116.8px); }
+}
