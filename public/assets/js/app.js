@@ -1,5 +1,5 @@
 // Sjellja e përbashkët e faqes: koka, menytë, orari "hapur tani", njoftimet.
-import { getSettings } from './data.js';
+import { getSettings, DEFAULT_SETTINGS } from './data.js';
 import { CONFIG } from './config.js';
 
 const $ = (s, el = document) => el.querySelector(s);
@@ -138,20 +138,45 @@ function kosovoNow() {
   const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
   return { day, minutes: Number(get('hour')) * 60 + Number(get('minute')) };
 }
+const fmtHour = (h) => `${String(Math.floor(h)).padStart(2, '0')}:${String(Math.round((h % 1) * 60)).padStart(2, '0')}`;
+/** Statusi sipas orarit, në kohën e Kosovës.
+ *  Kthen { open, label, state, meta, time, progress } — progress (0–1) vetëm kur është hapur. */
 export function openStatus(hours) {
   const { day, minutes } = kosovoNow();
   const today = hours[day];
-  const fmt = (h) => `${String(Math.floor(h)).padStart(2, '0')}:${String(Math.round((h % 1) * 60)).padStart(2, '0')}`;
-  if (today && minutes >= today[0] * 60 && minutes < today[1] * 60) return { open: true, label: `Hapur tani · mbyllet në ${fmt(today[1])}` };
-  if (today && minutes < today[0] * 60) return { open: false, label: `Mbyllur tani · hapet sot në ${fmt(today[0])}` };
+  if (today && minutes >= today[0] * 60 && minutes < today[1] * 60) {
+    const progress = (minutes - today[0] * 60) / ((today[1] - today[0]) * 60);
+    return { open: true, state: 'Hapur tani', meta: 'Mbyllet në', time: fmtHour(today[1]), progress, label: `Hapur tani · mbyllet në ${fmtHour(today[1])}` };
+  }
+  if (today && minutes < today[0] * 60) {
+    return { open: false, state: 'Mbyllur', meta: 'Hapet sot në', time: fmtHour(today[0]), progress: 0, label: `Mbyllur tani · hapet sot në ${fmtHour(today[0])}` };
+  }
   for (let i = 1; i <= 7; i++) {
     const d = (day + i) % 7;
     if (hours[d]) {
       const name = i === 1 ? 'nesër' : ['të dielën', 'të hënën', 'të martën', 'të mërkurën', 'të enjten', 'të premten', 'të shtunën'][d];
-      return { open: false, label: `Mbyllur tani · hapet ${name} në ${fmt(hours[d][0])}` };
+      return { open: false, state: 'Mbyllur', meta: `Hapet ${name} në`, time: fmtHour(hours[d][0]), progress: 0, label: `Mbyllur tani · hapet ${name} në ${fmtHour(hours[d][0])}` };
     }
   }
-  return { open: false, label: 'Mbyllur' };
+  return { open: false, state: 'Mbyllur', meta: '', time: '', progress: 0, label: 'Mbyllur' };
+}
+
+/* Statusi në hero: hapur/mbyllur, ora e radhës dhe sa ka kaluar nga orari i ditës */
+function renderStatusChip(hours) {
+  const st = openStatus(hours);
+  $$('[data-status-chip]').forEach((el) => {
+    el.dataset.state = st.open ? 'open' : 'closed';
+    $('[data-sc-state]', el).textContent = st.state;
+    $('[data-sc-meta]', el).innerHTML = st.time ? `${st.meta} <b>${st.time}</b>` : '';
+    const bar = $('[data-sc-bar]', el);
+    if (bar) bar.style.setProperty('--p', st.open ? st.progress.toFixed(3) : 0);
+    el.setAttribute('aria-label', st.label);
+  });
+}
+let chipHours = DEFAULT_SETTINGS.hours;
+if ($('[data-status-chip]')) {
+  renderStatusChip(chipHours);
+  setInterval(() => renderStatusChip(chipHours), 30000);
 }
 
 /* Të dhënat e kontaktit dhe njoftimi nga paneli admin */
@@ -167,7 +192,7 @@ getSettings().then((s) => {
   $$('[data-open-status]').forEach((el) => {
     el.innerHTML = `<span class="open-dot${st.open ? ' is-open' : ''}" style="background:${st.open ? '#fff' : 'var(--color-steel-600)'}"></span>${st.label}`;
   });
-  $$('[data-open-status-short]').forEach((el) => { el.textContent = st.label; });
+  chipHours = s.hours; renderStatusChip(chipHours);
   const a = s.announcement;
   const bar = $('#announce');
   if (bar && a?.text) {

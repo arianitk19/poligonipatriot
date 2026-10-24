@@ -96,7 +96,7 @@ export async function getGallery() {
   return (await local('gallery')).filter((g) => g.published !== false).sort(bySort);
 }
 
-const DEFAULT_SETTINGS = {
+export const DEFAULT_SETTINGS = {
   phone: CONFIG.site.phone,
   phoneDisplay: CONFIG.site.phoneDisplay,
   whatsapp: CONFIG.site.whatsapp,

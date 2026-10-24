@@ -16,7 +16,13 @@
 
   <div class="wrap relative grid lg:grid-cols-12 items-center min-h-[min(calc(100svh-5rem),54rem)] py-16 lg:py-20">
     <div class="lg:col-span-7 relative z-10">
-      <p class="hero-fade tag-live" style="--d:.15s"><b aria-hidden="true"></b><span data-open-status-short>Poligon qitjeje dhe dyqan armësh në Gjakovë</span></p>
+      <div class="hero-fade status-chip" style="--d:.15s" role="status" data-status-chip data-state="closed">
+        <span class="sc-live" aria-hidden="true"><i></i></span>
+        <span class="sc-state" data-sc-state>Gjakovë</span>
+        <span class="sc-div" aria-hidden="true"></span>
+        <span class="sc-meta" data-sc-meta>E hënë – e shtunë <b>09:00 – 22:00</b></span>
+        <span class="sc-bar" aria-hidden="true"><i data-sc-bar></i></span>
+      </div>
       <h1 id="h-hero" class="t-display mt-8">
         <span class="hero-line"><span style="--d:.2s">Saktësi<span class="text-patriot">.</span></span></span>
         <span class="hero-line"><span style="--d:.32s">Siguri<span class="text-patriot">.</span></span></span>
@@ -100,26 +106,53 @@
       <p class="t-lead lg:col-span-5 text-ink/75">Qitësi i ri që mëson bazat dhe qitësi me përvojë që rafinon teknikën gjejnë të njëjtat kushte: rregulla të qarta, instruktorë në korsi dhe pajisje të mirëmbajtura.</p>
     </div>
 
-    <div class="mt-16 grid gap-6 lg:grid-cols-12">
-      <article class="lg:col-span-7 grid gap-6">
-        <div class="relative aspect-[16/10] overflow-hidden rounded-lg">
-          <img src="/assets/img/gallery/g010.webp" alt="Korsitë e poligonit të brendshëm" loading="lazy" class="size-full object-cover scale-110" data-parallax="0.08">
-        </div>
-        <div class="grid gap-3">
+    <div class="mt-16 grid gap-6 lg:grid-cols-2">
+      <article class="range-card reveal">
+        <div class="range-art">{{> range-indoor}}</div>
+        <div class="range-body">
+          <p class="range-kicker"><span>01</span>Brenda</p>
           <h3 class="t-h3">Poligoni i brendshëm</h3>
-          <p class="text-ink/75 max-w-[56ch]">Mjedis i kontrolluar me ventilim dhe ndriçim profesional, i hapur gjatë gjithë vitit pavarësisht motit. Ideal për stërvitje të rregullt dhe për provimet praktike.</p>
+          <p class="text-ink/70 max-w-[52ch]">Mjedis i kontrolluar me ventilim dhe ndriçim profesional, i hapur gjatë gjithë vitit pavarësisht motit. Ideal për stërvitje të rregullt dhe për provimet praktike.</p>
+          <ul class="range-feats">
+            <li><svg aria-hidden="true"><use href="#i-clock"/></svg>Gjatë gjithë vitit</li>
+            <li><svg aria-hidden="true"><use href="#i-target"/></svg>Korsi të ndara</li>
+            <li><svg aria-hidden="true"><use href="#i-shield"/></svg>Staf në çdo seancë</li>
+          </ul>
         </div>
       </article>
-      <article class="lg:col-span-5 grid gap-6 content-start lg:mt-24">
-        <div class="relative aspect-[4/5] overflow-hidden rounded-lg">
-          <img src="/assets/img/site/poligoni-gjuetise.webp" alt="Poligoni i jashtëm" loading="lazy" class="size-full object-cover">
-        </div>
-        <div class="grid gap-3">
+      <article class="range-card reveal" style="transition-delay:.12s">
+        <div class="range-art">{{> range-outdoor}}</div>
+        <div class="range-body">
+          <p class="range-kicker"><span>02</span>Jashtë</p>
           <h3 class="t-h3">Poligoni i jashtëm</h3>
-          <p class="text-ink/75">Distanca më të gjata dhe kushte reale të terrenit, nga qitja me saktësi deri te qitja në lëvizje.</p>
+          <p class="text-ink/70 max-w-[52ch]">Distanca më të gjata dhe kushte reale të terrenit, nga qitja me saktësi deri te qitja në lëvizje, për një përvojë më të afërt me terrenin real.</p>
+          <ul class="range-feats">
+            <li><svg aria-hidden="true"><use href="#i-pin"/></svg>Distanca më të gjata</li>
+            <li><svg aria-hidden="true"><use href="#i-target"/></svg>Kushte reale</li>
+            <li><svg aria-hidden="true"><use href="#i-arrow"/></svg>Qitje në lëvizje</li>
+          </ul>
         </div>
       </article>
     </div>
+
+    <ul class="std-strip mt-6" aria-label="Standardi i sigurisë në të dy poligonet">
+      <li class="std reveal">
+        <svg class="std-ico si-ear" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 17a8 8 0 0 1 16 0"/><rect x="5" y="16" width="5" height="9" rx="2"/><rect x="22" y="16" width="5" height="9" rx="2"/><path class="si-wave" d="M29.5 17.5q1.6 3 0 6"/><path class="si-wave si-wave-2" d="M2.5 17.5q-1.6 3 0 6"/></svg>
+        <div><h4>Syze dhe kufje</h4><p>Të detyrueshme për këdo në zonën e qitjes.</p></div>
+      </li>
+      <li class="std reveal" style="transition-delay:.08s">
+        <svg class="std-ico si-aim" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="22" cy="16" r="7"/><circle cx="22" cy="16" r="3.2"/><circle class="si-dot" cx="22" cy="16" r="1" fill="currentColor"/><g class="si-arrow"><path d="M3 16h11"/><path d="M10.5 12.5 14 16l-3.5 3.5"/></g></svg>
+        <div><h4>Gryka drejt shenjës</h4><p>Gjithmonë, edhe kur arma është e shkarkuar.</p></div>
+      </li>
+      <li class="std reveal" style="transition-delay:.16s">
+        <svg class="std-ico si-shield" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3.5 26 7v8.5c0 6.2-4.3 10.6-10 13-5.7-2.4-10-6.8-10-13V7Z"/><path class="si-check" pathLength="1" d="m11 16 3.6 3.6L21.5 12.5"/></svg>
+        <div><h4>Instruktor në korsi</h4><p>Staf i trajnuar pranë jush në çdo seancë.</p></div>
+      </li>
+      <li class="std reveal" style="transition-delay:.24s">
+        <svg class="std-ico si-stop" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path class="si-pulse" d="M11 3.5h10l7.5 7.5v10L21 28.5H11L3.5 21V11Z"/><path d="M11 3.5h10l7.5 7.5v10L21 28.5H11L3.5 21V11Z"/><path d="M13 11v10M19 11v10" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <div><h4>Komanda “Ndal”</h4><p>Zbatohet menjëherë nga të gjithë në vijën e qitjes.</p></div>
+      </li>
+    </ul>
 
     <div class="mt-14 flex flex-wrap gap-3">
       <a href="/poligoni/" class="btn btn-ghost">Si funksionon vizita në poligon</a>
@@ -142,7 +175,7 @@
 </section>
 
 <!-- ───────── Nga dyqani ───────── -->
-<section class="section-tight border-t border-steel-800" aria-labelledby="h-shop">
+<section class="section-tight shop-section border-t border-steel-800" aria-labelledby="h-shop">
   <div class="wrap">
     <div class="flex flex-wrap items-end justify-between gap-6">
       <div>
@@ -151,12 +184,17 @@
       </div>
       <a href="/dyqani/" class="btn btn-ghost btn-sm">Të gjitha armët</a>
     </div>
-    <div class="mt-10 -mx-4 px-4 lg:mx-0 lg:px-0 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none]" >
-      <ul class="flex lg:grid lg:grid-cols-4 gap-5 min-w-max lg:min-w-0" data-featured>
-        <li class="w-[17rem] lg:w-auto skel aspect-[4/5]"></li>
-        <li class="w-[17rem] lg:w-auto skel aspect-[4/5]"></li>
-        <li class="w-[17rem] lg:w-auto skel aspect-[4/5]"></li>
-        <li class="w-[17rem] lg:w-auto skel aspect-[4/5]"></li>
+  </div>
+  <div class="shop-stage mt-10 lg:mt-14">
+    <div class="ribbon ribbon-a" aria-hidden="true"><div class="ribbon-track"><div><span>Poligoni Patriot</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Gjakovë</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Saktësi</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Siguri</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Disiplinë</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Poligoni Patriot</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Gjakovë</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Saktësi</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Siguri</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Disiplinë</span><svg aria-hidden="true"><use href="#i-target"/></svg></div><div><span>Poligoni Patriot</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Gjakovë</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Saktësi</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Siguri</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Disiplinë</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Poligoni Patriot</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Gjakovë</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Saktësi</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Siguri</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Disiplinë</span><svg aria-hidden="true"><use href="#i-target"/></svg></div></div></div>
+    <div class="ribbon ribbon-b" aria-hidden="true"><div class="ribbon-track"><div><span>Glock</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>CZ</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Beretta</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Sig Sauer</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Canik</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Taurus</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Arex</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Ruger</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Balistik</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Glock</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>CZ</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Beretta</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Sig Sauer</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Canik</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Taurus</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Arex</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Ruger</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Balistik</span><svg aria-hidden="true"><use href="#i-target"/></svg></div><div><span>Glock</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>CZ</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Beretta</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Sig Sauer</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Canik</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Taurus</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Arex</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Ruger</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Balistik</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Glock</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>CZ</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Beretta</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Sig Sauer</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Canik</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Taurus</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Arex</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Ruger</span><svg aria-hidden="true"><use href="#i-target"/></svg><span>Balistik</span><svg aria-hidden="true"><use href="#i-target"/></svg></div></div></div>
+    <div class="shop-rail" data-shop-rail>
+      <ul class="shop-track" data-featured>
+        <li class="pcard skel aspect-[4/5]"></li>
+        <li class="pcard skel aspect-[4/5]"></li>
+        <li class="pcard skel aspect-[4/5]"></li>
+        <li class="pcard skel aspect-[4/5]"></li>
+        <li class="pcard skel aspect-[4/5]"></li>
       </ul>
     </div>
   </div>

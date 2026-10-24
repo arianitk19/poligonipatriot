@@ -64,22 +64,24 @@
 </footer>
 
 <div class="dock is-compact" data-dock>
-  <div class="dock-card" id="wa-card" role="dialog" aria-label="Bisedë me Poligonin Patriot në WhatsApp" hidden data-lenis-prevent>
+  <div class="dock-card" id="wa-card" role="dialog" aria-label="Asistenti virtual i Poligonit Patriot" hidden data-lenis-prevent>
     <div class="dock-head">
-      <span class="dock-avatar"><img src="/assets/img/brand/icon-light.webp" alt="" width="512" height="512"></span>
-      <span class="grid leading-tight"><b class="font-semibold">Poligoni Patriot</b><small class="text-xs text-steel-400" data-dock-status>Zakonisht përgjigjemi shpejt</small></span>
+      <span class="dock-avatar"><img src="/assets/img/brand/logo-badge.webp" alt="" width="192" height="192"></span>
+      <span class="grid leading-tight min-w-0"><b class="font-semibold">Asistenti Patriot</b><small class="dock-status" data-dock-status>Online · përgjigje menjëherë</small></span>
+      <a href="https://wa.me/38349394850" class="dock-x dock-wa" target="_blank" rel="noopener" aria-label="Fol me stafin në WhatsApp" title="Fol me stafin në WhatsApp" data-dock-wa><svg class="size-[1.05rem]" aria-hidden="true"><use href="#i-whatsapp"/></svg></a>
       <button type="button" class="dock-x" aria-label="Mbyll bisedën" data-dock-close><svg class="size-4" aria-hidden="true"><use href="#i-close"/></svg></button>
     </div>
-    <div class="dock-body" data-dock-body></div>
+    <div class="dock-body" role="log" aria-live="polite" data-dock-body></div>
     <form class="dock-form" data-dock-form>
-      <label class="sr-only" for="dock-msg">Mesazhi</label>
-      <input id="dock-msg" name="msg" autocomplete="off" maxlength="500" placeholder="Shkruani mesazhin…">
-      <button type="submit" aria-label="Dërgo në WhatsApp"><svg aria-hidden="true"><use href="#i-send"/></svg></button>
+      <label class="sr-only" for="dock-msg">Pyetja juaj</label>
+      <input id="dock-msg" name="msg" autocomplete="off" maxlength="300" placeholder="Shkruani pyetjen tuaj…" enterkeyhint="send">
+      <button type="submit" aria-label="Dërgo pyetjen"><svg aria-hidden="true"><use href="#i-send"/></svg></button>
     </form>
+    <p class="dock-note">Asistent virtual · për pyetje të tjera <a href="https://wa.me/38349394850" target="_blank" rel="noopener" data-dock-wa>shkruani stafit</a></p>
   </div>
   <button type="button" class="dock-btn" aria-expanded="false" aria-controls="wa-card" data-dock-btn>
     <span class="dock-ico"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg></span>
-    <span class="dock-label"><b>Na shkruani</b><small data-dock-sub>WhatsApp</small></span>
+    <span class="dock-label"><b>Na shkruani</b><small data-dock-sub>Asistenti virtual</small></span>
   </button>
 </div>
 
