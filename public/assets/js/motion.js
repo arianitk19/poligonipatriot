@@ -172,7 +172,7 @@ function enhanceButtons() {
     if (textNodes[0].nodeType === 1) { textNodes[0].replaceChildren(roll); } else textNodes[0].replaceWith(roll);
   });
   if (fine && !reduce) {
-    $$('.btn:not([data-magnetic]), .path-go:not([data-magnetic]), .dock-btn:not([data-magnetic])').forEach((b) => {
+    $$('.btn:not([data-magnetic]), .cta:not([data-magnetic]), .path-go:not([data-magnetic]), .dock-btn:not([data-magnetic])').forEach((b) => {
       b.dataset.magnetic = '1';
       b.addEventListener('pointermove', (e) => {
         const r = b.getBoundingClientRect();
