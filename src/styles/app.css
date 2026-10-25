@@ -1264,3 +1264,12 @@ html.lenis, html.lenis body { height: auto; }
   .r3-row { opacity: 0.12; transform: scale(0.2); }
   .r3-reticle { transform: translate(150px, 176.3px) scale(1.1); }
 }
+
+/* Butoni X në faqen e produktit */
+@layer components {
+  .pd-close { display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; flex: none; border-radius: 999px; color: var(--color-bone); background: rgb(255 255 255 / 0.05); border: 1px solid rgb(255 255 255 / 0.16); transition: background-color 0.3s, border-color 0.3s, transform 0.5s var(--ease-out-expo); }
+  .pd-close svg { width: 1.1rem; height: 1.1rem; transition: transform 0.5s var(--ease-out-expo); }
+  .pd-close:hover, .pd-close:focus-visible { background: var(--color-patriot); border-color: var(--color-patriot); color: #fff; transform: scale(1.06); }
+  .pd-close:hover svg { transform: rotate(90deg); }
+  .pd-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+}

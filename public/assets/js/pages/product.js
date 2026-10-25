@@ -147,3 +147,17 @@ async function init() {
   }
 }
 init().catch((e) => { console.error(e); box.classList.add('hidden'); missing.classList.remove('hidden'); });
+
+/* Butoni X: kthehet aty ku ishte vizitori (dyqani me filtrat e tij), ose te dyqani */
+const closeBtn = document.querySelector('[data-pd-close]');
+if (closeBtn) {
+  const fromSite = document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1;
+  const leave = (e) => {
+    e?.preventDefault();
+    if (fromSite) history.back(); else location.href = '/dyqani/';
+  };
+  closeBtn.addEventListener('click', leave);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !document.querySelector('dialog[open]') && !document.querySelector('[data-dock].is-open')) leave(e);
+  });
+}
