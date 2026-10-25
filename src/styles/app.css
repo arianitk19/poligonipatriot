@@ -966,14 +966,16 @@ html.lenis, html.lenis body { height: auto; }
   @keyframes ribbon-l { to { transform: translateX(-50%); } }
   @keyframes ribbon-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
-  .shop-rail { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 1rem 1rem 1.5rem; }
+  .shop-rail { overflow: hidden; touch-action: pan-y; padding: 1rem 0 1.5rem; -webkit-mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+  .shop-rail.is-static { overflow-x: auto; touch-action: auto; padding-inline: 1rem; }
+  .shop-rail.is-static .is-dup { display: none !important; }
   .shop-rail::-webkit-scrollbar { display: none; }
-  .shop-track { display: flex; gap: 1.75rem; width: max-content; }
-  .shop-track > .pcard { width: 16.5rem; flex: none; scroll-snap-align: center; transition: transform 0.6s var(--ease-out-expo); }
+  .shop-track { display: flex; gap: 1.75rem; width: max-content; will-change: transform; }
+  .shop-track > .pcard { width: 16.5rem; flex: none; transition: transform 0.6s var(--ease-out-expo); -webkit-user-drag: none; }
+  .shop-track img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
   .shop-track .pcard-media { box-shadow: 0 30px 50px -28px rgb(0 0 0 / 0.95), 0 0 0 1px rgb(255 255 255 / 0.06); }
   .shop-track > .pcard:hover { transform: translateY(-6px); }
   .shop-track > .pcard.skel { padding: 0; }
-  .shop-track > .is-dup { display: none; }
   @media (min-width: 1024px) {
     .shop-rail { overflow: hidden; padding: 1.5rem 0 2rem; -webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
     .shop-stage { --rc: 9.75rem; }
@@ -1223,3 +1225,42 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 @media (prefers-reduced-motion: reduce) { .cta-shine::before, .cta-primary::after { animation: none; } }
+
+/* ═════════════ Dy poligonet v3 ═════════════ */
+@layer components {
+  .range-card:has(.rs3) .range-art { background: #0b0b0c; }
+  .rs3 { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* brenda */
+  .r3-lamp { opacity: 0.35; animation: r3-lamp 6s ease-in-out infinite; animation-delay: calc(var(--i) * 0.25s); }
+  @keyframes r3-lamp { 0%, 100% { opacity: 0.35; } 15% { opacity: 0.95; } 40% { opacity: 0.55; } }
+  .r3-carrier { animation: r3-carry 9s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+  .r3-c1 { animation-delay: 3s; } .r3-c2 { animation-delay: 6s; }
+  @keyframes r3-carry { 0%, 5% { transform: scale(1); } 30%, 40% { transform: scale(2.5); } 62%, 100% { transform: scale(1); } }
+  /* jashtë */
+  .r3-row { transform-origin: 240px 150px; opacity: 0; animation: r3-row 12s linear infinite; animation-delay: calc(var(--i) * -2s); }
+  @keyframes r3-row { 0% { transform: scale(0.03); opacity: 0; } 25% { transform: scale(0.076); opacity: 0.1; } 50% { transform: scale(0.194); opacity: 0.16; } 75% { transform: scale(0.492); opacity: 0.14; } 100% { transform: scale(1.25); opacity: 0; } }
+  .r3-sundisc { animation: r2-bull 5s ease-in-out infinite; }
+  .r3-reticle { animation: r3-move 12s cubic-bezier(0.7, 0, 0.25, 1) infinite; }
+  @keyframes r3-move {
+    0%, 30% { transform: translate(150px, 176.3px) scale(1.1); }
+    38%, 63% { transform: translate(326px, 157.35px) scale(0.68); }
+    71%, 92% { transform: translate(232px, 148.5px) scale(0.44); }
+    100% { transform: translate(150px, 176.3px) scale(1.1); }
+  }
+  .r3-ret-in { animation: r3-lock 4s ease-out -0.4s infinite; }
+  @keyframes r3-lock { 0%, 8% { transform: scale(1.45); opacity: 0.35; } 22% { transform: scale(1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.45); opacity: 0.35; } }
+  .r3-flash { opacity: 0; }
+  .r3-p0 { animation: r3-swing 12s ease-out infinite; } .r3-p0 .r3-flash { animation: r3-flash 12s ease-out infinite; }
+  .r3-p1 { animation: r3-swing 12s ease-out 4.32s infinite; } .r3-p1 .r3-flash { animation: r3-flash 12s ease-out 4.32s infinite; }
+  .r3-p2 { animation: r3-swing 12s ease-out 8.28s infinite; } .r3-p2 .r3-flash { animation: r3-flash 12s ease-out 8.28s infinite; }
+  @keyframes r3-swing { 0%, 10% { transform: rotate(0); } 11% { transform: rotate(9deg); } 13.5% { transform: rotate(-5deg); } 16% { transform: rotate(2.5deg); } 19%, 100% { transform: rotate(0); } }
+  @keyframes r3-flash { 0%, 9.8% { opacity: 0; } 10.2% { opacity: 1; } 24%, 100% { opacity: 0; } }
+  .r3-ping { opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .r3-g0 { animation: r3-ping 12s ease-out infinite; } .r3-g1 { animation: r3-ping 12s ease-out 4.32s infinite; } .r3-g2 { animation: r3-ping 12s ease-out 8.28s infinite; }
+  @keyframes r3-ping { 0%, 9.9% { opacity: 0; transform: scale(1); } 10.2% { opacity: 0.9; transform: scale(1); } 20%, 100% { opacity: 0; transform: scale(2.6); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rs3 * { animation: none !important; }
+  .r3-row { opacity: 0.12; transform: scale(0.2); }
+  .r3-reticle { transform: translate(150px, 176.3px) scale(1.1); }
+}
