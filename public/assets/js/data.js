@@ -86,14 +86,18 @@ export async function getProduct(slug) {
   return (await local('products')).find((p) => p.slug === slug && p.published !== false) || null;
 }
 
+// Foto që nuk shfaqen më askund në faqe, edhe nëse janë ende në databazë
+const HIDDEN_PHOTOS = ['g091'];
+const visiblePhoto = (g) => !HIDDEN_PHOTOS.some((n) => String(g.src || '').includes(`/${n}.`));
+
 export async function getGallery() {
   const sb = await getClient();
   if (sb) {
     const { data, error } = await sb.from('gallery').select('id,src,thumb,alt,width,height,sort').eq('published', true).order('sort');
-    if (!error && data) return data;
+    if (!error && data) return data.filter(visiblePhoto);
     console.warn('[data] gallery', error);
   }
-  return (await local('gallery')).filter((g) => g.published !== false).sort(bySort);
+  return (await local('gallery')).filter((g) => g.published !== false && visiblePhoto(g)).sort(bySort);
 }
 
 export const DEFAULT_SETTINGS = {
