@@ -50,7 +50,8 @@ function render() {
 
   grid.innerHTML = list.map((p, i) => productCard(p, { lazy: i > 7 })).join('');
   els.empty.classList.toggle('hidden', list.length > 0);
-  els.count.textContent = `${list.length} ${list.length === 1 ? 'produkt' : 'produkte'}`;
+  els.count.innerHTML = `<b>${list.length}</b> ${list.length === 1 ? 'armë' : 'armë'}`;
+  renderBar(list.length);
   const filtered = state.q || state.brand || state.caliber || state.sort;
   document.querySelectorAll('[data-reset]').forEach((b) => b.classList.toggle('hidden', !filtered && b.closest('[data-empty]') === null));
 
@@ -82,8 +83,58 @@ els.cats.addEventListener('click', (e) => {
   state.cat = b.dataset.cat; state.brand = ''; state.caliber = '';
   render();
 });
+/* ───── Shiriti i kërkimit dhe filtrat ───── */
+const bar = {
+  clear: $('[data-clear]'), badge: $('[data-badge]'), tags: $('[data-tags]'), panel: $('[data-panel]'),
+  scrim: $('[data-sb-scrim]'), apply: $('[data-apply]'), open: $('[data-open-filters]'),
+};
+const SORTS = { name: 'Emri A–Z', 'price-asc': 'Çmimi ↑', 'price-desc': 'Çmimi ↓' };
+function renderBar(n) {
+  bar.clear.hidden = !els.q.value;
+  const active = [state.brand, state.caliber, state.sort].filter(Boolean).length;
+  bar.badge.hidden = !active; bar.badge.textContent = active;
+  [els.brand, els.caliber, els.sort].forEach((s) => s.closest('.sb-field').classList.toggle('is-set', Boolean(s.value)));
+  bar.apply.textContent = n ? `Shfaq ${n} armë` : 'Asnjë armë';
+  const tags = [];
+  if (state.q) tags.push(['q', `“${state.q}”`]);
+  if (state.brand) tags.push(['brand', state.brand]);
+  if (state.caliber) tags.push(['caliber', state.caliber]);
+  if (state.sort) tags.push(['sort', SORTS[state.sort]]);
+  bar.tags.innerHTML = tags.map(([k, v]) => `<button type="button" class="sb-tag" data-untag="${k}" aria-label="Hiq filtrin ${esc(v)}">${esc(v)}<svg aria-hidden="true"><use href="#i-close"/></svg></button>`).join('');
+}
+bar.tags.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-untag]');
+  if (!b) return;
+  state[b.dataset.untag] = '';
+  if (b.dataset.untag === 'q') els.q.value = '';
+  if (b.dataset.untag === 'sort') els.sort.value = '';
+  render();
+});
+bar.clear.addEventListener('click', () => { els.q.value = ''; state.q = ''; render(); els.q.focus(); });
+const mobile = matchMedia('(max-width: 1023px)');
+if (matchMedia('(max-width: 639px)').matches) els.q.placeholder = 'Kërko armën ose markën…';
+function openPanel() {
+  if (!mobile.matches) return;
+  bar.panel.classList.add('is-open'); bar.scrim.hidden = false;
+  requestAnimationFrame(() => bar.scrim.classList.add('is-on'));
+  document.documentElement.classList.add('sheet-open');
+  window.ppLenis?.stop();
+}
+function closePanel() {
+  bar.panel.classList.remove('is-open'); bar.scrim.classList.remove('is-on');
+  document.documentElement.classList.remove('sheet-open');
+  window.ppLenis?.start();
+  setTimeout(() => { bar.scrim.hidden = true; }, 350);
+}
+bar.open.addEventListener('click', openPanel);
+document.querySelectorAll('[data-close-filters]').forEach((b) => b.addEventListener('click', closePanel));
+bar.scrim.addEventListener('click', closePanel);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bar.panel.classList.contains('is-open')) closePanel(); });
+$('[data-reset-sheet]').addEventListener('click', () => { Object.assign(state, { brand: '', caliber: '', sort: '' }); els.sort.value = ''; render(); });
+els.q.addEventListener('keydown', (e) => { if (e.key === 'Enter') els.q.blur(); });
+
 let t;
-els.q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { state.q = els.q.value.trim(); render(); }, 160); });
+els.q.addEventListener('input', () => { bar.clear.hidden = !els.q.value; clearTimeout(t); t = setTimeout(() => { state.q = els.q.value.trim(); render(); }, 160); });
 els.brand.addEventListener('change', () => { state.brand = els.brand.value; render(); });
 els.caliber.addEventListener('change', () => { state.caliber = els.caliber.value; render(); });
 els.sort.addEventListener('change', () => { state.sort = els.sort.value; render(); });
@@ -92,3 +143,22 @@ document.querySelectorAll('[data-reset]').forEach((b) => b.addEventListener('cli
   els.q.value = ''; els.sort.value = '';
   render();
 }));
+
+// vija poshtë shiritit vetëm kur ai ngjitet lart
+{
+  const sb = $('[data-shopbar]');
+  const sentinel = document.createElement('div');
+  sb.before(sentinel);
+  new IntersectionObserver(([e]) => sb.classList.toggle('is-stuck', !e.isIntersecting), { rootMargin: '-90px 0px 0px 0px' }).observe(sentinel);
+}
+
+// Në telefon paneli i filtrave jeton te <body> (që të mos ndikohet nga shiriti që lëviz); në desktop rri në rresht
+{
+  const row = $('.sb-row');
+  const place = () => {
+    if (mobile.matches) { if (bar.panel.parentElement !== document.body) document.body.append(bar.scrim, bar.panel); }
+    else if (bar.panel.parentElement !== row) { closePanel(); row.append(bar.panel); }
+  };
+  place();
+  mobile.addEventListener('change', place);
+}

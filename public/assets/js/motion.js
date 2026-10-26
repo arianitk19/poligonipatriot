@@ -139,7 +139,14 @@ function onScroll() {
   lastY = y;
   ticking = false;
 }
-const req = () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } };
+const req = () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } markScrolling(); };
+// Gjatë scroll-it ndalen animacionet e ilustrimeve SVG (rivizatohen në CPU), që lëvizja të jetë e rrjedhshme në telefon
+let scrollT = 0;
+function markScrolling() {
+  if (!root.classList.contains('is-scrolling')) root.classList.add('is-scrolling');
+  clearTimeout(scrollT);
+  scrollT = setTimeout(() => root.classList.remove('is-scrolling'), 160);
+}
 if (lenis) lenis.on('scroll', req); else addEventListener('scroll', req, { passive: true });
 addEventListener('resize', req);
 onScroll();

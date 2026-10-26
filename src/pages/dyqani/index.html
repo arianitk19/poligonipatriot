@@ -17,30 +17,48 @@
 
 <section class="pb-24" aria-label="Katalogu">
   <div class="wrap">
-    <div class="sticky-filter sticky top-[4.5rem] lg:top-20 z-30 -mx-4 px-4 py-4 bg-steel-950/90 backdrop-blur border-b border-steel-800">
-      <div class="flex gap-2 overflow-x-auto [scrollbar-width:none]" role="toolbar" aria-label="Kategoritë" data-cats>
-        <button type="button" class="chip" aria-pressed="true" data-cat="">Të gjitha</button>
-      </div>
-      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_12rem_12rem_13rem]">
-        <label class="relative">
-          <span class="sr-only">Kërko</span>
-          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 size-5 text-steel-400 pointer-events-none" aria-hidden="true"><use href="#i-search"/></svg>
-          <input class="input !min-h-11 !pl-11" type="search" placeholder="Kërko modelin, markën, kalibrin…" data-q autocomplete="off">
-        </label>
-        <label><span class="sr-only">Marka</span><select class="input !min-h-11" data-brand><option value="">Të gjitha markat</option></select></label>
-        <label><span class="sr-only">Kalibri</span><select class="input !min-h-11" data-caliber><option value="">Të gjithë kalibrat</option></select></label>
-        <label><span class="sr-only">Renditja</span><select class="input !min-h-11" data-sort>
-          <option value="">Të rekomanduarat</option>
-          <option value="name">Emri A–Z</option>
-          <option value="price-asc">Çmimi: nga më i ulëti</option>
-          <option value="price-desc">Çmimi: nga më i larti</option>
-        </select></label>
-      </div>
+    <div class="flex gap-2 overflow-x-auto [scrollbar-width:none] -mx-4 px-4 pb-1" role="toolbar" aria-label="Kategoritë" data-cats>
+      <button type="button" class="chip" aria-pressed="true" data-cat="">Të gjitha</button>
     </div>
 
-    <div class="mt-8 flex items-center justify-between gap-4 text-sm text-steel-400">
-      <p aria-live="polite" data-count>Duke ngarkuar…</p>
-      <button type="button" class="link-u hidden" data-reset>Pastro filtrat</button>
+    <div class="shop-bar" data-shopbar>
+      <div class="sb-row">
+        <label class="sb-search">
+          <span class="sr-only">Kërko</span>
+          <svg class="sb-search-ico" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" placeholder="Kërko modelin, markën, kalibrin…" data-q autocomplete="off" enterkeyhint="search">
+          <button type="button" class="sb-clear" aria-label="Fshi kërkimin" data-clear hidden><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+        </label>
+        <button type="button" class="sb-filter-btn" aria-haspopup="dialog" aria-controls="sb-panel" data-open-filters>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+          <span>Filtrat</span><b class="sb-badge" data-badge hidden>0</b>
+        </button>
+        <div class="sb-panel" id="sb-panel" role="dialog" aria-label="Filtrat e dyqanit" data-panel data-lenis-prevent>
+          <div class="sb-panel-head">
+            <b>Filtrat</b>
+            <button type="button" class="sb-x" aria-label="Mbyll filtrat" data-close-filters><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+          </div>
+          <label class="sb-field"><span>Marka</span><select class="sb-select" data-brand><option value="">Të gjitha markat</option></select></label>
+          <label class="sb-field"><span>Kalibri</span><select class="sb-select" data-caliber><option value="">Të gjithë kalibrat</option></select></label>
+          <label class="sb-field"><span>Renditja</span><select class="sb-select" data-sort>
+            <option value="">Të rekomanduarat</option>
+            <option value="name">Emri A–Z</option>
+            <option value="price-asc">Çmimi: nga më i ulëti</option>
+            <option value="price-desc">Çmimi: nga më i larti</option>
+          </select></label>
+          <div class="sb-panel-foot">
+            <button type="button" class="btn btn-ghost" data-reset-sheet>Pastro</button>
+            <button type="button" class="btn btn-primary" data-close-filters data-apply>Shfaq armët</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sb-scrim" data-sb-scrim hidden></div>
+
+    <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm text-steel-400">
+      <p aria-live="polite" class="sb-count" data-count>Duke ngarkuar…</p>
+      <div class="flex flex-wrap gap-2" data-tags></div>
+      <button type="button" class="link-u hidden ml-auto" data-reset>Pastro filtrat</button>
     </div>
 
     <ul class="mt-6 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10" data-grid>

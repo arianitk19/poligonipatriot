@@ -263,3 +263,9 @@ document.querySelectorAll('.path-row').forEach((row) => {
     row.style.setProperty('--mx', `${Math.min(Math.max(e.clientX - r.left, 160), r.width - 160)}px`);
   });
 });
+
+/* Animacionet e pafundme (ilustrime, shirita) ndalen kur dalin nga ekrani */
+if ('IntersectionObserver' in window) {
+  const io2 = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting)), { rootMargin: '120px 0px' });
+  $$('.range-art, .cert-art, .std-strip, .ribbon, .marquee, .hero-art, .mnav-rings').forEach((el) => io2.observe(el));
+}
