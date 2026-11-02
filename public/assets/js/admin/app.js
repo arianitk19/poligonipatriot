@@ -1,7 +1,8 @@
 // Paneli admin i Poligonit Patriot — vetëm për administratorët e regjistruar në tabelën public.admins.
 import { CONFIG, isSupabaseConfigured } from '../config.js';
 import { getClient } from '../data.js';
-import { kerkesaDocument, printKerkesa, WEAPON_CLASSES, dmy } from '../kerkesa-doc.js';
+import { kerkesaDocument, WEAPON_CLASSES, dmy } from '../kerkesa-doc.js';
+import { makeKerkesaPdf, downloadFile } from '../kerkesa-pdf.js';
 import { $, $$, esc, toast, confirmBox, slugify, fmtDate, toWebp, rid, uploadMedia, removeMedia, errMsg, badge, mediaUrl, PROGRAMS, REASONS, STATUS, loginEmailFrom, userLabel } from './lib.js';
 
 const app = $('#app');
@@ -567,7 +568,7 @@ async function viewInbox(kind, selectedId) {
       </dl>
       ${sel.message ? `<div><h3 class="text-sm font-semibold text-steel-400 mb-2">Mesazhi</h3><p class="whitespace-pre-wrap text-steel-200">${esc(sel.message)}</p></div>` : ''}
       ${isK ? `<div class="a-sig"><p class="text-sm font-semibold text-steel-400 mb-2">Nënshkrimi</p><div class="a-sig-box" data-sig-preview><span class="text-xs text-steel-400">Duke hapur…</span></div>
-        <div class="flex flex-wrap gap-3 mt-4"><button type="button" class="btn btn-primary btn-sm" data-print-k><svg aria-hidden="true"><use href="#i-cert"/></svg>Printo / ruaj kërkesën (PDF)</button><a class="btn btn-ghost btn-sm" href="#/aplikimet/${esc(sel.id)}/fleta"><svg aria-hidden="true"><use href="#i-eye"/></svg>Shiko fletën</a></div></div>` : ''}
+        <div class="flex flex-wrap gap-3 mt-4"><button type="button" class="btn btn-primary btn-sm" data-print-k><svg aria-hidden="true"><use href="#i-cert"/></svg>Shkarko kërkesën (PDF)</button><a class="btn btn-ghost btn-sm" href="#/aplikimet/${esc(sel.id)}/fleta"><svg aria-hidden="true"><use href="#i-eye"/></svg>Shiko fletën</a></div></div>` : ''}
       ${isApp && !isK ? `<div class="grid sm:grid-cols-2 gap-3">${['id_front_path', 'id_back_path'].map((k, i) => sel[k] ? `<button type="button" class="btn btn-ghost" data-doc="${esc(sel[k])}"><svg aria-hidden="true"><use href="#i-card"/></svg>Letërnjoftimi: ${i ? 'ana e pasme' : 'ana e parë'}</button>` : '').join('')}</div><p class="text-xs text-steel-400 -mt-3">Dokumentet hapen me lidhje të përkohshme që skadon pas 2 minutash.</p>` : ''}
       <label class="field"><span>Shënim i brendshëm</span><textarea class="input !min-h-24" data-note maxlength="2000" placeholder="P.sh. thirrur më 12.03, grupi i së shtunës">${esc(sel.note || '')}</textarea></label>
       <div class="flex flex-wrap gap-3">
@@ -599,7 +600,7 @@ async function viewInbox(kind, selectedId) {
       return data.signedUrl;
     };
     sigUrl().then((u) => { const box = $('[data-sig-preview]', det); if (box) box.innerHTML = u ? `<img src="${esc(u)}" alt="Nënshkrimi i aplikantit">` : '<span class="text-xs text-steel-400">Nënshkrimi mungon.</span>'; });
-    $('[data-print-k]', det).addEventListener('click', async () => { const u = await sigUrl(); printKerkesa(sel, u); });
+    $('[data-print-k]', det).addEventListener('click', async () => { const u = await sigUrl(); downloadFile(await makeKerkesaPdf(sel, u)); });
   }
   $('[data-del]', det).addEventListener('click', async () => {
     if (!(await confirmBox('Fshi përgjithmonë?', isApp ? (isK ? 'Kërkesa dhe nënshkrimi do të fshihen përgjithmonë.' : 'Aplikimi dhe dokumentet e letërnjoftimit do të fshihen përgjithmonë.') : 'Mesazhi do të fshihet përgjithmonë.', 'Fshi'))) return;
@@ -624,14 +625,14 @@ async function viewFleta(id) {
     const { data } = await sb.storage.from(CONFIG.applicationsBucket).createSignedUrl(sel.signature_path, 600);
     sig = data?.signedUrl || null;
   }
-  v.innerHTML = head(esc(sel.full_name), `<div class="flex flex-wrap gap-3"><a class="btn btn-ghost btn-sm" href="#/aplikimet/${esc(sel.id)}">‹ Te aplikimi</a><button type="button" class="btn btn-primary btn-sm" data-print-k><svg aria-hidden="true"><use href="#i-cert"/></svg>Printo / ruaj PDF</button></div>`, 'Kërkesë për trajnim profesional për armë') + `
+  v.innerHTML = head(esc(sel.full_name), `<div class="flex flex-wrap gap-3"><a class="btn btn-ghost btn-sm" href="#/aplikimet/${esc(sel.id)}">‹ Te aplikimi</a><button type="button" class="btn btn-primary btn-sm" data-print-k><svg aria-hidden="true"><use href="#i-cert"/></svg>Shkarko PDF</button></div>`, 'Kërkesë për trajnim profesional për armë') + `
     <div class="a-fleta" data-fleta><iframe title="Kërkesa e nënshkruar" data-fleta-frame></iframe></div>`;
   const wrap = $('[data-fleta]', v);
   const frame = $('[data-fleta-frame]', v);
   frame.srcdoc = kerkesaDocument(sel, sig);
   const fit = () => { const k = Math.min(1, wrap.clientWidth / 860); frame.style.left = `${Math.max(0, (wrap.clientWidth - 860) / 2)}px`; frame.style.transform = `scale(${k})`; wrap.style.height = `${Math.ceil(1250 * k)}px`; };
   fit(); new ResizeObserver(fit).observe(wrap);
-  $('[data-print-k]', v).addEventListener('click', () => printKerkesa(sel, sig));
+  $('[data-print-k]', v).addEventListener('click', async () => downloadFile(await makeKerkesaPdf(sel, sig)));
 }
 
 /* ───────────────────────── Cilësimet ───────────────────────── */

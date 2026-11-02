@@ -18,7 +18,8 @@ export function kerkesaDocument(d, signatureSrc) {
   const classes = d.weapon_classes || [];
   return `<!doctype html><html lang="sq"><head><meta charset="utf-8"><title>Kërkesë për trajnim — ${esc(d.full_name)}</title>
 <style>
-@page { size: A4; margin: 14mm 16mm; }
+@page { size: A4; margin: 0; }
+@media print { .sheet { width: 210mm; height: 297mm; padding: 14mm 16mm; } }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: #fff; color: #0c0c0e; font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .sheet { width: 178mm; min-height: 262mm; margin: 0 auto; display: flex; flex-direction: column; }
@@ -40,7 +41,6 @@ h1 { text-align: center; font-size: 15pt; margin: 13mm 0 12mm; }
 .date { display: flex; align-items: flex-end; gap: 3mm; margin-top: 11mm; font-size: 15pt; font-weight: 700; }
 .date .val { width: 55mm; border-bottom: 1px solid #111; font-size: 12pt; font-weight: 400; color: #13213f; padding: 0 1mm 0.6mm; }
 .foot { margin-top: auto; border-top: 1px solid #111; padding-top: 2.4mm; text-align: center; font-weight: 700; font-size: 10pt; }
-.meta { margin-top: 2mm; text-align: center; font-size: 7.5pt; color: #6b6b70; }
 @media screen { body { background: #e9e9ec; padding: 10mm 0; } .sheet { background: #fff; padding: 14mm 16mm; width: 210mm; box-shadow: 0 10px 40px rgba(0,0,0,.18); } }
 </style></head><body>
 <div class="sheet">
@@ -60,7 +60,6 @@ h1 { text-align: center; font-size: 15pt; margin: 13mm 0 12mm; }
   <div class="sig"><span>Nënshkrimi</span><span class="val">${signatureSrc ? `<img src="${esc(signatureSrc)}" alt="Nënshkrimi">` : ''}</span></div>
   <div class="date"><span>Data</span><span class="val">${dmy(d.signed_on)}</span></div>
   <div class="foot">MOB: +383 49 394 850 &nbsp; E-mail: poligoni.patriot@gmail.com</div>
-  <p class="meta">Nënshkruar në mënyrë digjitale përmes poligonipatriot.com${d.id ? ` · Nr. i kërkesës: ${esc(String(d.id).slice(0, 8).toUpperCase())}` : ''}</p>
 </div>
 </body></html>`;
 }

@@ -3,7 +3,8 @@ import { CONFIG } from '../config.js';
 import { fieldError, isEmail, isPhone, looksLikeBot, compressImage, showDone, friendlyError } from '../forms.js';
 import { toast } from '../app.js';
 import { createSignaturePad, typedSignatureFile, loadSigFonts, SIG_FONTS } from '../signature.js';
-import { printKerkesa, dmy, WEAPON_CLASSES } from '../kerkesa-doc.js';
+import { dmy, WEAPON_CLASSES } from '../kerkesa-doc.js';
+import { makeKerkesaPdf, downloadFile } from '../kerkesa-pdf.js';
 
 const started = Date.now();
 const params = new URLSearchParams(location.search);
@@ -191,7 +192,7 @@ getSettings().then((st) => { if (st?.whatsapp) waNumber = String(st.whatsapp).re
 const coarse = matchMedia('(hover: none)').matches;
 
 // Mesazhi për WhatsApp: pa numrin e letërnjoftimit dhe pa nënshkrimin
-function waLink(d, id) {
+function waText(d, id) {
   const lines = [
     'Përshëndetje Poligoni Patriot! Sapo nënshkrova dhe dërgova kërkesën zyrtare për trajnim profesional për armë.',
     '',
@@ -199,8 +200,25 @@ function waLink(d, id) {
     `Trajnimi: ${d.weapon_classes.map((k) => `${k}. ${WEAPON_CLASSES[k]}`).join(', ')}`,
     `Tel: ${d.phone}`,
   ];
-  if (id) lines.push(`Nr. i kërkesës: ${String(id).slice(0, 8).toUpperCase()}`, '', `Kërkesa e nënshkruar (PDF): ${location.origin}/admin/#/aplikimet/${id}/fleta`);
-  return `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
+  if (id) lines.push(`Nr. i kërkesës: ${String(id).slice(0, 8).toUpperCase()}`);
+  return lines.join('\n');
+}
+const waLink = (d, id, extra = '') => `https://wa.me/${waNumber}?text=${encodeURIComponent(waText(d, id) + extra)}`;
+
+// PDF-ja për WhatsApp (numri i letërnjoftimit i fshehur) dhe kopja e plotë e aplikantit
+let pdfWa = null, pdfFull = null;
+const canShareFiles = (f) => { try { return Boolean(navigator.canShare?.({ files: [f] })); } catch { return false; } };
+async function sendPdf(auto = false, waWin = null) {
+  if (!pdfWa) return;
+  const d = lastCopy.data;
+  if (canShareFiles(pdfWa)) {
+    try { await navigator.share({ files: [pdfWa], text: waText(d, d.id), title: 'Kërkesa për trajnim' }); return; }
+    catch (ex) { if (ex?.name === 'AbortError' || auto) return; }
+  }
+  // Pa ndarje skedarësh (kompjuter): PDF-ja shkarkohet dhe hapet WhatsApp me mesazhin gati
+  downloadFile(pdfWa);
+  const url = waLink(d, d.id, '\n\nPo e bashkëngjis PDF-në e kërkesës.');
+  if (waWin && !waWin.closed) waWin.location.href = url; else window.open(url, '_blank', 'noopener');
 }
 kForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -217,7 +235,7 @@ kForm.addEventListener('submit', async (e) => {
   btn.setAttribute('aria-busy', 'true');
   // Në kompjuter skeda e WhatsApp hapet tani (brenda klikimit), që shfletuesi të mos e bllokojë
   let waWin = null;
-  if (!coarse) { try { waWin = window.open('', '_blank'); if (waWin) { waWin.opener = null; waWin.document.write('<title>WhatsApp</title><body style="background:#0a0a0b;color:#b6b6bb;font:16px system-ui;display:grid;place-items:center;height:100vh;margin:0">Duke hapur WhatsApp…</body>'); } } catch { waWin = null; } }
+  if (!coarse && !navigator.canShare) { try { waWin = window.open('', '_blank'); if (waWin) { waWin.opener = null; waWin.document.write('<title>WhatsApp</title><body style="background:#0a0a0b;color:#b6b6bb;font:16px system-ui;display:grid;place-items:center;height:100vh;margin:0">Duke hapur WhatsApp…</body>'); } } catch { waWin = null; } }
   try {
     progress.textContent = 'Duke përgatitur nënshkrimin…';
     const sig = sigMode === 'type' ? await typedSignatureFile(typedInput.value.trim().replace(/\s+/g, ' '), sigFont) : await pad.toFile('nenshkrimi.png');
@@ -226,12 +244,12 @@ kForm.addEventListener('submit', async (e) => {
     if (r.offline) toast('Mënyra demo: lidhni Supabase te config.js që kërkesat të ruhen.');
     const sigUrl = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(sig); });
     lastCopy = { data: { ...data, id: r.id }, sigUrl };
-    const wa = waLink(data, r.id);
-    document.querySelectorAll('[data-wa-after]').forEach((a) => { a.href = wa; });
+    progress.textContent = 'Duke krijuar PDF-në…';
+    [pdfWa, pdfFull] = await Promise.all([makeKerkesaPdf(lastCopy.data, sigUrl, { hideId: true }), makeKerkesaPdf(lastCopy.data, sigUrl)]);
     showDone(kForm);
-    // Pas konfirmimit hapet automatikisht WhatsApp te numri i poligonit
-    if (waWin && !waWin.closed) waWin.location.href = wa;
-    else setTimeout(() => { location.href = wa; }, 900);
+    // Pas konfirmimit, PDF-ja dërgohet menjëherë në WhatsApp te numri i poligonit
+    if (canShareFiles(pdfWa)) await sendPdf(true);
+    else await sendPdf(true, waWin);
   } catch (ex) {
     console.error(ex);
     waWin?.close();
@@ -240,7 +258,8 @@ kForm.addEventListener('submit', async (e) => {
     btn.removeAttribute('aria-busy'); progress.textContent = '';
   }
 });
-document.querySelector('[data-print-copy]').addEventListener('click', () => { if (lastCopy) printKerkesa(lastCopy.data, lastCopy.sigUrl); });
+document.querySelector('[data-print-copy]').addEventListener('click', () => { if (pdfFull) downloadFile(pdfFull); });
+document.querySelector('[data-send-pdf]').addEventListener('click', () => sendPdf(false));
 
 /* ───────────────────────── 2. Aplikimi i shpejtë (me foto të letërnjoftimit) ───────────────────────── */
 const form = document.querySelector('[data-apply-form]');
