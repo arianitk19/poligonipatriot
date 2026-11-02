@@ -1,8 +1,9 @@
-import { submitApplication } from '../data.js';
+import { submitApplication, getSettings } from '../data.js';
+import { CONFIG } from '../config.js';
 import { fieldError, isEmail, isPhone, looksLikeBot, compressImage, showDone, friendlyError } from '../forms.js';
 import { toast } from '../app.js';
 import { createSignaturePad } from '../signature.js';
-import { printKerkesa, dmy } from '../kerkesa-doc.js';
+import { printKerkesa, dmy, WEAPON_CLASSES } from '../kerkesa-doc.js';
 
 const started = Date.now();
 const params = new URLSearchParams(location.search);
@@ -132,6 +133,22 @@ function validateKerkese() {
 }
 
 let lastCopy = null;
+let waNumber = CONFIG.site.whatsapp || '38349394850';
+getSettings().then((st) => { if (st?.whatsapp) waNumber = String(st.whatsapp).replace(/\D/g, ''); }).catch(() => {});
+const coarse = matchMedia('(hover: none)').matches;
+
+// Mesazhi për WhatsApp: pa numrin e letërnjoftimit dhe pa nënshkrimin
+function waLink(d, id) {
+  const txt = [
+    'Përshëndetje Poligoni Patriot! Sapo nënshkrova dhe dërgova kërkesën zyrtare për trajnim profesional për armë.',
+    '',
+    `Emri: ${d.first_name} ${d.father_name} ${d.last_name}`,
+    `Trajnimi: ${d.weapon_classes.map((k) => `${k}. ${WEAPON_CLASSES[k]}`).join(', ')}`,
+    `Tel: ${d.phone}`,
+    id ? `Nr. i kërkesës: ${String(id).slice(0, 8).toUpperCase()}` : '',
+  ].filter((x, i) => x || i === 1).join('\n');
+  return `https://wa.me/${waNumber}?text=${encodeURIComponent(txt)}`;
+}
 kForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = kForm.querySelector('[data-form-error]');
@@ -145,6 +162,9 @@ kForm.addEventListener('submit', async (e) => {
   const btn = kForm.querySelector('button[type="submit"]');
   const progress = kForm.querySelector('[data-progress]');
   btn.setAttribute('aria-busy', 'true');
+  // Në kompjuter skeda e WhatsApp hapet tani (brenda klikimit), që shfletuesi të mos e bllokojë
+  let waWin = null;
+  if (!coarse) { try { waWin = window.open('', '_blank'); if (waWin) { waWin.opener = null; waWin.document.write('<title>WhatsApp</title><body style="background:#0a0a0b;color:#b6b6bb;font:16px system-ui;display:grid;place-items:center;height:100vh;margin:0">Duke hapur WhatsApp…</body>'); } } catch { waWin = null; } }
   try {
     progress.textContent = 'Duke përgatitur nënshkrimin…';
     const sig = await pad.toFile('nenshkrimi.png');
@@ -153,9 +173,15 @@ kForm.addEventListener('submit', async (e) => {
     if (r.offline) toast('Mënyra demo: lidhni Supabase te config.js që kërkesat të ruhen.');
     const sigUrl = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(sig); });
     lastCopy = { data: { ...data, id: r.id }, sigUrl };
+    const wa = waLink(data, r.id);
+    document.querySelectorAll('[data-wa-after]').forEach((a) => { a.href = wa; });
     showDone(kForm);
+    // Pas konfirmimit hapet automatikisht WhatsApp te numri i poligonit
+    if (waWin && !waWin.closed) waWin.location.href = wa;
+    else setTimeout(() => { location.href = wa; }, 900);
   } catch (ex) {
     console.error(ex);
+    waWin?.close();
     err.textContent = friendlyError(ex); err.hidden = false;
   } finally {
     btn.removeAttribute('aria-busy'); progress.textContent = '';
