@@ -130,3 +130,36 @@ export function createSignaturePad(canvas, { onChange, ink = INK } = {}) {
     },
   };
 }
+
+/* ───────── Nënshkrimi me tastierë (emri i shkruar me shkronja dore) ───────── */
+export const SIG_FONTS = {
+  vibes: { family: 'PP Sig Vibes', scale: 1 },
+  dancing: { family: 'PP Sig Dancing', scale: 0.82 },
+  caveat: { family: 'PP Sig Caveat', scale: 0.92 },
+};
+
+export const loadSigFonts = (text = 'Nënshkrimi') =>
+  Promise.all(Object.values(SIG_FONTS).map((f) => document.fonts.load(`64px "${f.family}"`, text).catch(() => null)));
+
+/** PNG transparent me emrin e shkruar me fontin e zgjedhur, i prerë rreth shkrimit. */
+export async function typedSignatureFile(text, fontKey = 'vibes', { ink = INK, name = 'nenshkrimi.png' } = {}) {
+  const f = SIG_FONTS[fontKey] || SIG_FONTS.vibes;
+  await document.fonts.load(`120px "${f.family}"`, text).catch(() => null);
+  const W = 1500, H = 600;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  let size = 230 * f.scale;
+  g.font = `${size}px "${f.family}", cursive`;
+  const w = g.measureText(text).width;
+  if (w > W * 0.9) { size *= (W * 0.9) / w; g.font = `${size}px "${f.family}", cursive`; }
+  g.fillStyle = ink; g.textBaseline = 'alphabetic'; g.textAlign = 'center';
+  g.fillText(text, W / 2, H * 0.68);
+  const data = g.getImageData(0, 0, W, H).data;
+  let x0 = W, y0 = H, x1 = 0, y1 = 0;
+  for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) if (data[(y * W + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  const pad = 18; x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(W, x1 + pad); y1 = Math.min(H, y1 + pad);
+  const out = document.createElement('canvas'); out.width = Math.max(1, x1 - x0); out.height = Math.max(1, y1 - y0);
+  out.getContext('2d').drawImage(c, x0, y0, out.width, out.height, 0, 0, out.width, out.height);
+  const blob = await new Promise((r) => out.toBlob(r, 'image/png'));
+  return new File([blob], name, { type: 'image/png' });
+}

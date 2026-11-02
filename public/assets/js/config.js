@@ -22,7 +22,7 @@ export const CONFIG = {
     phone: '+38349394850',
     phoneDisplay: '+383 49 394 850',
     whatsapp: '38349394850',
-    email: 'info@poligonipatriot.com',
+    email: 'poligoni.patriot@gmail.com',
     timezone: 'Europe/Belgrade',
   },
 };

@@ -567,7 +567,7 @@ async function viewInbox(kind, selectedId) {
       </dl>
       ${sel.message ? `<div><h3 class="text-sm font-semibold text-steel-400 mb-2">Mesazhi</h3><p class="whitespace-pre-wrap text-steel-200">${esc(sel.message)}</p></div>` : ''}
       ${isK ? `<div class="a-sig"><p class="text-sm font-semibold text-steel-400 mb-2">Nënshkrimi</p><div class="a-sig-box" data-sig-preview><span class="text-xs text-steel-400">Duke hapur…</span></div>
-        <div class="flex flex-wrap gap-3 mt-4"><button type="button" class="btn btn-primary btn-sm" data-print-k><svg aria-hidden="true"><use href="#i-cert"/></svg>Printo / ruaj kërkesën (PDF)</button><button type="button" class="btn btn-ghost btn-sm" data-view-k><svg aria-hidden="true"><use href="#i-eye"/></svg>Shiko fletën</button></div></div>` : ''}
+        <div class="flex flex-wrap gap-3 mt-4"><button type="button" class="btn btn-primary btn-sm" data-print-k><svg aria-hidden="true"><use href="#i-cert"/></svg>Printo / ruaj kërkesën (PDF)</button><a class="btn btn-ghost btn-sm" href="#/aplikimet/${esc(sel.id)}/fleta"><svg aria-hidden="true"><use href="#i-eye"/></svg>Shiko fletën</a></div></div>` : ''}
       ${isApp && !isK ? `<div class="grid sm:grid-cols-2 gap-3">${['id_front_path', 'id_back_path'].map((k, i) => sel[k] ? `<button type="button" class="btn btn-ghost" data-doc="${esc(sel[k])}"><svg aria-hidden="true"><use href="#i-card"/></svg>Letërnjoftimi: ${i ? 'ana e pasme' : 'ana e parë'}</button>` : '').join('')}</div><p class="text-xs text-steel-400 -mt-3">Dokumentet hapen me lidhje të përkohshme që skadon pas 2 minutash.</p>` : ''}
       <label class="field"><span>Shënim i brendshëm</span><textarea class="input !min-h-24" data-note maxlength="2000" placeholder="P.sh. thirrur më 12.03, grupi i së shtunës">${esc(sel.note || '')}</textarea></label>
       <div class="flex flex-wrap gap-3">
@@ -600,11 +600,6 @@ async function viewInbox(kind, selectedId) {
     };
     sigUrl().then((u) => { const box = $('[data-sig-preview]', det); if (box) box.innerHTML = u ? `<img src="${esc(u)}" alt="Nënshkrimi i aplikantit">` : '<span class="text-xs text-steel-400">Nënshkrimi mungon.</span>'; });
     $('[data-print-k]', det).addEventListener('click', async () => { const u = await sigUrl(); printKerkesa(sel, u); });
-    $('[data-view-k]', det).addEventListener('click', async () => {
-      const w = window.open('about:blank', '_blank');
-      const u = await sigUrl();
-      if (w) { w.document.open(); w.document.write(kerkesaDocument(sel, u)); w.document.close(); }
-    });
   }
   $('[data-del]', det).addEventListener('click', async () => {
     if (!(await confirmBox('Fshi përgjithmonë?', isApp ? (isK ? 'Kërkesa dhe nënshkrimi do të fshihen përgjithmonë.' : 'Aplikimi dhe dokumentet e letërnjoftimit do të fshihen përgjithmonë.') : 'Mesazhi do të fshihet përgjithmonë.', 'Fshi'))) return;
@@ -616,6 +611,27 @@ async function viewInbox(kind, selectedId) {
     if (er) return toast(errMsg(er));
     toast('U fshi.'); location.hash = base;
   });
+}
+
+/* ───────────────────────── Fleta e kërkesës zyrtare (hapet edhe nga lidhja në WhatsApp) ───────────────────────── */
+async function viewFleta(id) {
+  const v = shell('applications');
+  v.innerHTML = head('Kërkesa zyrtare') + '<div class="skel h-96"></div>';
+  const { data: sel, error } = await sb.from('applications').select('*').eq('id', id).maybeSingle();
+  if (error || !sel) { v.innerHTML = head('Kërkesa zyrtare') + `<p class="field-error">${esc(error ? errMsg(error) : 'Kërkesa nuk u gjet.')}</p>`; return; }
+  let sig = null;
+  if (sel.signature_path) {
+    const { data } = await sb.storage.from(CONFIG.applicationsBucket).createSignedUrl(sel.signature_path, 600);
+    sig = data?.signedUrl || null;
+  }
+  v.innerHTML = head(esc(sel.full_name), `<div class="flex flex-wrap gap-3"><a class="btn btn-ghost btn-sm" href="#/aplikimet/${esc(sel.id)}">‹ Te aplikimi</a><button type="button" class="btn btn-primary btn-sm" data-print-k><svg aria-hidden="true"><use href="#i-cert"/></svg>Printo / ruaj PDF</button></div>`, 'Kërkesë për trajnim profesional për armë') + `
+    <div class="a-fleta" data-fleta><iframe title="Kërkesa e nënshkruar" data-fleta-frame></iframe></div>`;
+  const wrap = $('[data-fleta]', v);
+  const frame = $('[data-fleta-frame]', v);
+  frame.srcdoc = kerkesaDocument(sel, sig);
+  const fit = () => { const k = Math.min(1, wrap.clientWidth / 860); frame.style.left = `${Math.max(0, (wrap.clientWidth - 860) / 2)}px`; frame.style.transform = `scale(${k})`; wrap.style.height = `${Math.ceil(1250 * k)}px`; };
+  fit(); new ResizeObserver(fit).observe(wrap);
+  $('[data-print-k]', v).addEventListener('click', () => printKerkesa(sel, sig));
 }
 
 /* ───────────────────────── Cilësimet ───────────────────────── */
@@ -743,12 +759,13 @@ async function viewSecurity() {
 
 /* ───────────────────────── Ruteri ───────────────────────── */
 async function route() {
-  const [, a, b] = (location.hash.replace(/^#/, '') || '/').split('/');
+  const [, a, b, c] = (location.hash.replace(/^#/, '') || '/').split('/');
   try {
     if (!a) return await viewDash();
     if (a === 'produktet') return b ? await viewProductEdit(b) : await viewProducts();
     if (a === 'kategorite') return await viewCategories();
     if (a === 'galeria') return await viewGallery();
+    if (a === 'aplikimet' && b && c === 'fleta') return await viewFleta(b);
     if (a === 'aplikimet') return await viewInbox('applications', b);
     if (a === 'mesazhet') return await viewInbox('messages', b);
     if (a === 'cilesimet') return await viewSettings();

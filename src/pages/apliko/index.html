@@ -84,17 +84,38 @@
             <div class="pf-sign">
               <div class="pf-sign-head">
                 <p class="pf-big" id="lbl-sign">Nënshkrimi</p>
-                <div class="pf-tools">
+                <div class="sig-mode" role="radiogroup" aria-label="Mënyra e nënshkrimit">
+                  <button type="button" role="radio" aria-checked="true" data-sig-mode="draw"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 19.5 9.5 9 20H4v-5z"/><path d="M12.5 6.5 17.5 11.5"/></svg>Vizato</button>
+                  <button type="button" role="radio" aria-checked="false" data-sig-mode="type"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>Shkruaj</button>
+                </div>
+              </div>
+
+              <div class="grid gap-3" data-sig-draw>
+                <div class="pf-tools justify-end">
                   <button type="button" class="pf-tool" data-sig-undo disabled><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span>Zhbëj</span></button>
                   <button type="button" class="pf-tool" data-sig-clear disabled><svg aria-hidden="true"><use href="#i-close"/></svg><span>Pastro</span></button>
                   <button type="button" class="pf-tool" data-sig-full><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ekran i plotë</span></button>
                 </div>
+                <div class="sig-pad" data-sig-wrap>
+                  <canvas data-sig aria-labelledby="lbl-sign" role="img"></canvas>
+                  <span class="sig-x" aria-hidden="true">✕</span>
+                  <span class="sig-line" aria-hidden="true"></span>
+                  <span class="sig-hint" aria-hidden="true" data-sig-hint><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c3-1 4.5-6 6.5-6S11 16 13 16s3-4 4.5-4S20 15 21 15"/></svg><span class="sig-hint-touch">Nënshkruani këtu me gisht</span><span class="sig-hint-mouse">Nënshkruani këtu me maus ose touchpad</span></span>
+                </div>
               </div>
-              <div class="sig-pad" data-sig-wrap>
-                <canvas data-sig aria-labelledby="lbl-sign" role="img"></canvas>
-                <span class="sig-x" aria-hidden="true">✕</span>
-                <span class="sig-line" aria-hidden="true"></span>
-                <span class="sig-hint" aria-hidden="true" data-sig-hint><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c3-1 4.5-6 6.5-6S11 16 13 16s3-4 4.5-4S20 15 21 15"/></svg><span class="sig-hint-touch">Nënshkruani këtu me gisht</span><span class="sig-hint-mouse">Nënshkruani këtu me maus ose touchpad</span></span>
+
+              <div class="grid gap-4" data-sig-type hidden>
+                <label class="pf"><input name="sig_text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="Shkruani emrin dhe mbiemrin"><span>Nënshkrimi me tastierë</span></label>
+                <div class="sig-pad sig-typed" data-sig-typed>
+                  <span class="sig-typed-text" data-sig-typed-text></span>
+                  <span class="sig-x" aria-hidden="true">✕</span>
+                  <span class="sig-line" aria-hidden="true"></span>
+                </div>
+                <div class="sig-fonts" role="radiogroup" aria-label="Stili i shkrimit">
+                  <button type="button" role="radio" aria-checked="true" data-sig-font="vibes" style="font-family:'PP Sig Vibes',cursive">Nënshkrimi</button>
+                  <button type="button" role="radio" aria-checked="false" data-sig-font="dancing" style="font-family:'PP Sig Dancing',cursive">Nënshkrimi</button>
+                  <button type="button" role="radio" aria-checked="false" data-sig-font="caveat" style="font-family:'PP Sig Caveat',cursive">Nënshkrimi</button>
+                </div>
               </div>
               <p class="field-error" data-error-for="signature" hidden></p>
             </div>

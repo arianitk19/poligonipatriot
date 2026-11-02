@@ -113,5 +113,10 @@ begin
   end if;
 end $outer$;
 
+-- 5) Emaili i kontaktit në faqe: poligoni.patriot@gmail.com
+update public.site_settings
+   set value = jsonb_set(value, '{email}', to_jsonb('poligoni.patriot@gmail.com'::text))
+ where key = 'site';
+
 -- Rifreskon skemën e API-së që fushat e reja të njihen menjëherë
 notify pgrst, 'reload schema';

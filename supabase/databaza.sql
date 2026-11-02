@@ -148,7 +148,7 @@ create policy "admin menaxhon cilësimet" on public.site_settings for all to aut
 
 insert into public.site_settings (key, value) values ('site', jsonb_build_object(
   'phone', '+38349394850', 'phoneDisplay', '+383 49 394 850', 'whatsapp', '38349394850',
-  'email', 'info@poligonipatriot.com', 'hoursWeek', '09:00 – 22:00', 'hoursSunday', 'Mbyllur',
+  'email', 'poligoni.patriot@gmail.com', 'hoursWeek', '09:00 – 22:00', 'hoursSunday', 'Mbyllur',
   'hours', jsonb_build_object('0', null, '1', '[9,22]'::jsonb, '2', '[9,22]'::jsonb, '3', '[9,22]'::jsonb, '4', '[9,22]'::jsonb, '5', '[9,22]'::jsonb, '6', '[9,22]'::jsonb),
   'announcement', null
 )) on conflict (key) do nothing;

@@ -127,7 +127,7 @@ function answerFor(id, ctx) {
       };
     case 'contact':
       return {
-        text: `Telefoni dhe WhatsApp: <b>${phone}</b><br>Email: <b>${esc(s.email || 'info@poligonipatriot.com')}</b><br>Gjatë orarit të punës ju përgjigjemi shpejt.`,
+        text: `Telefoni dhe WhatsApp: <b>${phone}</b><br>Email: <b>${esc(s.email || 'poligoni.patriot@gmail.com')}</b><br>Gjatë orarit të punës ju përgjigjemi shpejt.`,
         actions: [A.link('Telefono', `tel:${(s.phone || '+38349394850').replace(/\s/g, '')}`), A.wa('Shkruaj në WhatsApp')],
       };
     case 'cert':

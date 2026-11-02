@@ -2,7 +2,7 @@ import { submitApplication, getSettings } from '../data.js';
 import { CONFIG } from '../config.js';
 import { fieldError, isEmail, isPhone, looksLikeBot, compressImage, showDone, friendlyError } from '../forms.js';
 import { toast } from '../app.js';
-import { createSignaturePad } from '../signature.js';
+import { createSignaturePad, typedSignatureFile, loadSigFonts, SIG_FONTS } from '../signature.js';
 import { printKerkesa, dmy, WEAPON_CLASSES } from '../kerkesa-doc.js';
 
 const started = Date.now();
@@ -51,6 +51,52 @@ const syncSig = () => {
 const pad = createSignaturePad(kForm.querySelector('[data-sig]'), { onChange: () => syncSig() });
 undoBtn.addEventListener('click', () => pad.undo());
 clearBtn.addEventListener('click', () => pad.clear());
+
+// Mënyra e nënshkrimit: vizatim (gisht/maus) ose me tastierë
+let sigMode = 'draw';
+let sigFont = 'vibes';
+const typeBox = kForm.querySelector('[data-sig-type]');
+const drawBox = kForm.querySelector('[data-sig-draw]');
+const typedInput = kForm.elements.sig_text;
+const typedText = kForm.querySelector('[data-sig-typed-text]');
+const typedPad = kForm.querySelector('[data-sig-typed]');
+const fontBtns = [...kForm.querySelectorAll('[data-sig-font]')];
+function renderTyped() {
+  const t = typedInput.value.trim().replace(/\s+/g, ' ');
+  const f = SIG_FONTS[sigFont];
+  typedText.textContent = t;
+  typedText.style.fontFamily = `"${f.family}", cursive`;
+  typedText.style.fontWeight = sigFont === 'vibes' ? '400' : '600';
+  const box = typedPad.getBoundingClientRect();
+  let size = Math.max(28, box.height * 0.42 * f.scale);
+  typedText.style.fontSize = `${size}px`;
+  if (t && typedText.scrollWidth > box.width * 0.88) typedText.style.fontSize = `${size * (box.width * 0.88) / typedText.scrollWidth}px`;
+  fontBtns.forEach((b) => { b.textContent = t || 'Nënshkrimi'; });
+  if (t.length >= 3) { fieldError(kForm, 'signature', ''); typedPad.removeAttribute('aria-invalid'); }
+}
+function setSigMode(m) {
+  sigMode = m;
+  kForm.querySelectorAll('[data-sig-mode]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sigMode === m)));
+  drawBox.hidden = m !== 'draw'; typeBox.hidden = m !== 'type';
+  fieldError(kForm, 'signature', ''); sigWrap.removeAttribute('aria-invalid'); typedPad.removeAttribute('aria-invalid');
+  if (m === 'draw') { pad.refit(); return; }
+  if (!typedInput.value.trim()) {
+    const f = kForm.elements;
+    const full = [f.first_name.value, f.last_name.value].map((x) => x.trim()).filter(Boolean).join(' ');
+    if (full) typedInput.value = full;
+  }
+  loadSigFonts(typedInput.value || 'Nënshkrimi').then(renderTyped);
+  renderTyped();
+  if (!typedInput.value) typedInput.focus({ preventScroll: true });
+}
+kForm.querySelectorAll('[data-sig-mode]').forEach((b) => b.addEventListener('click', () => setSigMode(b.dataset.sigMode)));
+fontBtns.forEach((b) => b.addEventListener('click', () => {
+  sigFont = b.dataset.sigFont;
+  fontBtns.forEach((x) => x.setAttribute('aria-checked', String(x === b)));
+  renderTyped();
+}));
+typedInput.addEventListener('input', renderTyped);
+new ResizeObserver(() => { if (sigMode === 'type') renderTyped(); }).observe(typedPad);
 
 // Ekrani i plotë: fushë e madhe për nënshkrim, sidomos në telefon
 const modal = document.querySelector('[data-sig-modal]');
@@ -106,9 +152,16 @@ function validateKerkese() {
   const classes = [...kForm.querySelectorAll('input[name="weapon_classes"]:checked')].map((i) => i.value);
   bad('weapon_classes', classes.length ? '' : 'Zgjidhni të paktën një nga A, B ose C.');
 
-  const sigMsg = pad.isEmpty() ? 'Nënshkruani kërkesën në fushën e nënshkrimit.' : pad.inkLength() < 60 ? 'Nënshkrimi është shumë i shkurtër. Nënshkruani si zakonisht.' : '';
+  let sigMsg = '';
+  if (sigMode === 'type') {
+    const t = typedInput.value.trim();
+    sigMsg = t.length < 3 ? 'Shkruani emrin dhe mbiemrin si nënshkrim.' : '';
+    typedPad.toggleAttribute('aria-invalid', Boolean(sigMsg));
+  } else {
+    sigMsg = pad.isEmpty() ? 'Nënshkruani kërkesën në fushën e nënshkrimit, ose zgjidhni "Shkruaj".' : pad.inkLength() < 60 ? 'Nënshkrimi është shumë i shkurtër. Nënshkruani si zakonisht.' : '';
+    sigWrap.toggleAttribute('aria-invalid', Boolean(sigMsg));
+  }
   bad('signature', sigMsg);
-  sigWrap.toggleAttribute('aria-invalid', Boolean(sigMsg));
 
   bad('consent', f.consent.checked ? '' : 'Duhet të konfirmoni për të vazhduar.');
   if (!ok) return null;
@@ -139,15 +192,15 @@ const coarse = matchMedia('(hover: none)').matches;
 
 // Mesazhi për WhatsApp: pa numrin e letërnjoftimit dhe pa nënshkrimin
 function waLink(d, id) {
-  const txt = [
+  const lines = [
     'Përshëndetje Poligoni Patriot! Sapo nënshkrova dhe dërgova kërkesën zyrtare për trajnim profesional për armë.',
     '',
     `Emri: ${d.first_name} ${d.father_name} ${d.last_name}`,
     `Trajnimi: ${d.weapon_classes.map((k) => `${k}. ${WEAPON_CLASSES[k]}`).join(', ')}`,
     `Tel: ${d.phone}`,
-    id ? `Nr. i kërkesës: ${String(id).slice(0, 8).toUpperCase()}` : '',
-  ].filter((x, i) => x || i === 1).join('\n');
-  return `https://wa.me/${waNumber}?text=${encodeURIComponent(txt)}`;
+  ];
+  if (id) lines.push(`Nr. i kërkesës: ${String(id).slice(0, 8).toUpperCase()}`, '', `Kërkesa e nënshkruar (PDF): ${location.origin}/admin/#/aplikimet/${id}/fleta`);
+  return `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
 }
 kForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -167,7 +220,7 @@ kForm.addEventListener('submit', async (e) => {
   if (!coarse) { try { waWin = window.open('', '_blank'); if (waWin) { waWin.opener = null; waWin.document.write('<title>WhatsApp</title><body style="background:#0a0a0b;color:#b6b6bb;font:16px system-ui;display:grid;place-items:center;height:100vh;margin:0">Duke hapur WhatsApp…</body>'); } } catch { waWin = null; } }
   try {
     progress.textContent = 'Duke përgatitur nënshkrimin…';
-    const sig = await pad.toFile('nenshkrimi.png');
+    const sig = sigMode === 'type' ? await typedSignatureFile(typedInput.value.trim().replace(/\s+/g, ' '), sigFont) : await pad.toFile('nenshkrimi.png');
     progress.textContent = 'Duke dërguar kërkesën…';
     const r = await submitApplication(data, { nenshkrimi: sig });
     if (r.offline) toast('Mënyra demo: lidhni Supabase te config.js që kërkesat të ruhen.');

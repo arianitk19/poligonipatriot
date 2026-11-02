@@ -446,6 +446,8 @@
   .a-row { display: grid; grid-template-columns: 1fr auto; gap: 0.2rem 1rem; padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--color-steel-800); transition: background-color 0.15s; }
   .a-row:last-child { border-bottom: 0; }
   .a-sig-box { display: grid; place-items: center; min-height: 7.5rem; padding: 0.9rem 1.2rem; border-radius: 0.6rem; background: #fbfaf7; border: 1px solid var(--color-steel-700); }
+  .a-fleta { position: relative; overflow: hidden; border-radius: 0.6rem; background: #e9e9ec; }
+  .a-fleta iframe { position: absolute; left: 0; top: 0; width: 860px; height: 1250px; border: 0; transform-origin: 0 0; background: #e9e9ec; }
   .a-sig-box img { max-width: 100%; max-height: 8rem; width: auto; height: auto; }
   .a-row > :nth-child(2) { grid-column: 1; }
   .a-row > :nth-child(3) { grid-column: 2; grid-row: 1; text-align: right; }
@@ -1447,4 +1449,27 @@ html.is-scrolling .range-svg *, html.is-scrolling .cert-svg *, html.is-scrolling
   .sig-modal-bar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.6rem; }
   html.sig-open { overflow: hidden; }
   html.sig-open .dock, html.sig-open .bullet-top { display: none; }
+}
+
+/* Fontet e nënshkrimit me tastierë (SIL OFL) */
+@font-face { font-family: "PP Sig Vibes"; src: url("/assets/fonts/sig/great-vibes-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "PP Sig Dancing"; font-weight: 600; src: url("/assets/fonts/sig/dancing-script-latin-600-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "PP Sig Caveat"; font-weight: 600; src: url("/assets/fonts/sig/caveat-latin-600-normal.woff2") format("woff2"); font-display: swap; }
+
+@layer components {
+  .sig-mode { display: inline-flex; padding: 0.25rem; border-radius: 999px; background: #ecebe6; gap: 0.2rem; }
+  .sig-mode button { display: inline-flex; align-items: center; gap: 0.4rem; height: 2.15rem; padding: 0 0.95rem; border-radius: 999px; color: #4a4a4f; font-size: 0.85rem; font-weight: 650; transition: background-color 0.25s, color 0.25s, box-shadow 0.25s; }
+  .sig-mode button svg { width: 1rem; height: 1rem; }
+  .sig-mode button:hover { color: #111113; }
+  .sig-mode button[aria-checked="true"] { background: #111113; color: #fff; box-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.6); }
+  .sig-mode button:focus-visible { outline: 2px solid var(--color-patriot); outline-offset: 2px; }
+  .sig-typed { display: grid; place-items: center; border-style: solid; border-color: #d6d3cb; }
+  .sig-typed-text { position: relative; z-index: 2; max-width: 88%; padding-bottom: 6%; color: var(--ink, #13213f); line-height: 1.1; white-space: nowrap; text-align: center; transition: font-size 0.2s; }
+  .sig-typed-text:empty::before { content: "Emri juaj"; color: #c2bfb6; }
+  .sig-fonts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+  .sig-fonts button { min-height: 3.3rem; padding: 0.35rem 0.6rem; border-radius: 0.65rem; border: 1px solid #d6d3cb; background: #fff; color: #13213f; font-size: 1.45rem; line-height: 1.1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; transition: border-color 0.2s, box-shadow 0.2s; }
+  .sig-fonts button[data-sig-font="dancing"], .sig-fonts button[data-sig-font="caveat"] { font-weight: 600; font-size: 1.3rem; }
+  .sig-fonts button:hover { border-color: #9d9a92; }
+  .sig-fonts button[aria-checked="true"] { border-color: var(--color-patriot); box-shadow: 0 0 0 3px rgb(227 52 59 / 0.15); }
+  @media (max-width: 420px) { .sig-mode button { padding: 0 0.75rem; } .sig-fonts button { font-size: 1.15rem; } }
 }
