@@ -143,7 +143,7 @@ export async function submitMessage(payload) {
 /** Dërgon aplikimin për certifikim bashkë me dokumentet (bucket privat). */
 export async function submitApplication(payload, files = {}) {
   const sb = await getClient();
-  if (!sb) return { offline: true };
+  if (!sb) return { offline: true, id: crypto.randomUUID() };
   const id = crypto.randomUUID();
   const paths = {};
   for (const [key, file] of Object.entries(files)) {
@@ -154,7 +154,9 @@ export async function submitApplication(payload, files = {}) {
     if (error) throw error;
     paths[key] = path;
   }
-  const { error } = await sb.from('applications').insert({ id, ...payload, id_front_path: paths.front || null, id_back_path: paths.back || null });
+  const row = { id, ...payload, id_front_path: paths.front || null, id_back_path: paths.back || null };
+  if (paths.nenshkrimi) row.signature_path = paths.nenshkrimi;
+  const { error } = await sb.from('applications').insert(row);
   if (error) throw error;
-  return { ok: true };
+  return { ok: true, id };
 }

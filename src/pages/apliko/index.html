@@ -1,76 +1,189 @@
 <!--page {
-  "title": "Apliko për certifikim — Armë të shkurtra dhe të gjata | Poligoni Patriot",
-  "description": "Aplikimi online për trajnimin dhe certifikimin profesional për armë të shkurtra dhe të gjata. Plotësoni formularin dhe ngarkoni letërnjoftimin; ju kontaktojmë për orarin.",
+  "title": "Apliko për certifikim — Kërkesa zyrtare për trajnim me armë | Poligoni Patriot",
+  "description": "Plotësoni dhe nënshkruani online kërkesën zyrtare për trajnim profesional për armë të shkurtra dhe të gjata, me gisht në telefon ose me maus në kompjuter.",
   "nav": "trajnimet",
   "scripts": ["/assets/js/pages/apply.js"]
 } -->
 
-<section class="page-hero !pb-12">
+<section class="page-hero !pb-10">
   <div class="wrap grid lg:grid-cols-12 gap-10 items-end">
     <div class="lg:col-span-8">
       <nav aria-label="Rruga e navigimit" class="crumbs"><a href="/">Ballina</a> <span aria-hidden="true">/</span> <a href="/trajnimet-certifikimet/">Trajnime &amp; certifikime</a> <span aria-hidden="true">/</span> Apliko</nav>
       <h1 class="t-h1 mt-6 max-w-[18ch]">Aplikimi për certifikim profesional</h1>
     </div>
-    <p class="lg:col-span-4 text-steel-300">Certifikimi teorik dhe praktik është baza për këdo që synon të pajiset me leje për armë të shkurtra ose të gjata.</p>
+    <p class="lg:col-span-4 text-steel-300">Plotësoni kërkesën zyrtare të poligonit dhe nënshkruajeni direkt këtu, me gisht në telefon ose me maus në kompjuter.</p>
   </div>
 </section>
 
-<section class="pb-24" aria-label="Formulari i aplikimit">
+<section class="pb-24" aria-label="Aplikimi">
   <div class="wrap grid lg:grid-cols-12 gap-12 lg:gap-16">
-    <div class="lg:col-span-7">
-      <form class="grid gap-10" novalidate data-apply-form>
-        <fieldset class="grid gap-6">
-          <legend class="t-h3 mb-6">Të dhënat personale</legend>
-          <label class="field"><span>Emri dhe mbiemri *</span><input class="input" name="full_name" autocomplete="name" required maxlength="120" placeholder="Si në letërnjoftim"></label>
-          <div class="grid sm:grid-cols-2 gap-6">
-            <label class="field"><span>Numri personal (letërnjoftimi) *</span><input class="input t-spec" name="id_number" required inputmode="numeric" maxlength="20" placeholder="10 shifra" autocomplete="off"></label>
-            <label class="field"><span>Telefoni *</span><input class="input" name="phone" type="tel" autocomplete="tel" required maxlength="40" placeholder="+383 4X XXX XXX"></label>
+    <div class="lg:col-span-7 min-w-0">
+
+      <div class="apply-modes" role="tablist" aria-label="Mënyra e aplikimit">
+        <button type="button" role="tab" id="tab-kerkese" aria-controls="panel-kerkese" aria-selected="true" data-mode="kerkese">
+          <span class="am-ico"><svg aria-hidden="true"><use href="#i-cert"/></svg></span>
+          <span class="am-txt"><b>Kërkesa zyrtare</b><small>Plotëso dhe nënshkruaj online</small></span>
+          <span class="am-tag">Rekomandohet</span>
+        </button>
+        <button type="button" role="tab" id="tab-online" aria-controls="panel-online" aria-selected="false" tabindex="-1" data-mode="online">
+          <span class="am-ico"><svg aria-hidden="true"><use href="#i-card"/></svg></span>
+          <span class="am-txt"><b>Aplikim i shpejtë</b><small>Me foto të letërnjoftimit</small></span>
+        </button>
+      </div>
+
+      <!-- ═══════════ 1. KËRKESA ZYRTARE (parësore) ═══════════ -->
+      <div id="panel-kerkese" role="tabpanel" aria-labelledby="tab-kerkese" data-panel="kerkese">
+        <form class="grid gap-8" novalidate data-kerkese-form>
+          <article class="paper" aria-label="Kërkesë për trajnim profesional për armë">
+            <header class="paper-head">
+              <img src="/assets/img/brand/logo-wordmark-dark.webp" alt="Poligoni Patriot, Gjakovë" width="800" height="314">
+              <p><b>POLIGONI PATRIOT</b> <span aria-hidden="true">|</span> POLIGONI I SHENJËTARISË – SHOOTING RANGE</p>
+              <p><b>ADRESA:</b> ZIDI SADIK AGES P.N., 50 000, GJAKOVË, REPUBLIKA E KOSOVËS</p>
+            </header>
+
+            <h2 class="paper-title">Kërkesë për trajnim profesional për armë</h2>
+
+            <div class="pf-group">
+              <p class="pf-label" id="lbl-emri">Emri, emri i babait, mbiemri</p>
+              <div class="pf-name" role="group" aria-labelledby="lbl-emri">
+                <label class="pf"><input name="first_name" autocomplete="given-name" required maxlength="60" placeholder=" "><span>Emri</span></label>
+                <label class="pf"><input name="father_name" autocomplete="off" required maxlength="60" placeholder=" "><span>Emri i babait</span></label>
+                <label class="pf"><input name="last_name" autocomplete="family-name" required maxlength="60" placeholder=" "><span>Mbiemri</span></label>
+              </div>
+              <p class="field-error" data-error-for="name" hidden></p>
+            </div>
+
+            <div class="pf-grid">
+              <label class="pf-group"><span class="pf-label">Data e lindjes</span>
+                <span class="pf pf-date"><input name="birth_date" type="date" required min="1900-01-01" autocomplete="bday"><span class="sr-only">Data e lindjes</span></span>
+                <span class="field-error" data-error-for="birth_date" hidden></span>
+              </label>
+              <label class="pf-group"><span class="pf-label">Vendi dhe shteti i lindjes</span>
+                <span class="pf"><input name="birth_place" required maxlength="120" placeholder="P.sh. Gjakovë, Kosovë"></span>
+                <span class="field-error" data-error-for="birth_place" hidden></span>
+              </label>
+              <label class="pf-group"><span class="pf-label">Nr. i telefonit</span>
+                <span class="pf"><input name="phone" type="tel" autocomplete="tel" required maxlength="40" placeholder="+383 4X XXX XXX"></span>
+                <span class="field-error" data-error-for="phone" hidden></span>
+              </label>
+              <label class="pf-group"><span class="pf-label">Nr. i letërnjoftimit</span>
+                <span class="pf"><input name="id_number" class="t-spec" required inputmode="numeric" maxlength="20" autocomplete="off" placeholder="Numri personal, 10 shifra"></span>
+                <span class="field-error" data-error-for="id_number" hidden></span>
+              </label>
+            </div>
+
+            <fieldset class="pf-classes">
+              <legend>Me anë të kësaj kërkese, kërkoj që t'i nënshtrohem trajnimit profesional për:</legend>
+              <label class="pf-opt"><input type="checkbox" name="weapon_classes" value="A"><span class="pf-l">A.</span><span class="pf-box" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="pf-t">Armë e shkurtër e zjarrit</span></label>
+              <label class="pf-opt"><input type="checkbox" name="weapon_classes" value="B"><span class="pf-l">B.</span><span class="pf-box" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="pf-t">Armë e gjatë e zjarrit me vijaska</span></label>
+              <label class="pf-opt"><input type="checkbox" name="weapon_classes" value="C"><span class="pf-l">C.</span><span class="pf-box" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="pf-t">Armë e gjatë e zjarrit pa vijaska</span></label>
+              <p class="pf-hint">Mund të zgjidhni një ose më shumë.</p>
+              <p class="field-error" data-error-for="weapon_classes" hidden></p>
+            </fieldset>
+
+            <div class="pf-sign">
+              <div class="pf-sign-head">
+                <p class="pf-big" id="lbl-sign">Nënshkrimi</p>
+                <div class="pf-tools">
+                  <button type="button" class="pf-tool" data-sig-undo disabled><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span>Zhbëj</span></button>
+                  <button type="button" class="pf-tool" data-sig-clear disabled><svg aria-hidden="true"><use href="#i-close"/></svg><span>Pastro</span></button>
+                  <button type="button" class="pf-tool" data-sig-full><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ekran i plotë</span></button>
+                </div>
+              </div>
+              <div class="sig-pad" data-sig-wrap>
+                <canvas data-sig aria-labelledby="lbl-sign" role="img"></canvas>
+                <span class="sig-x" aria-hidden="true">✕</span>
+                <span class="sig-line" aria-hidden="true"></span>
+                <span class="sig-hint" aria-hidden="true" data-sig-hint><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c3-1 4.5-6 6.5-6S11 16 13 16s3-4 4.5-4S20 15 21 15"/></svg><span class="sig-hint-touch">Nënshkruani këtu me gisht</span><span class="sig-hint-mouse">Nënshkruani këtu me maus ose touchpad</span></span>
+              </div>
+              <p class="field-error" data-error-for="signature" hidden></p>
+            </div>
+
+            <div class="pf-date-row"><span class="pf-big">Data</span><span class="pf-date-val" data-today></span></div>
+
+            <footer class="paper-foot">MOB: +383 49 394 850 &nbsp; E-mail: poligoni.patriot@gmail.com</footer>
+          </article>
+
+          <label class="hp" aria-hidden="true">Mos e plotësoni këtë fushë<input name="website" tabindex="-1" autocomplete="off"></label>
+
+          <label class="check"><input type="checkbox" name="consent" required><span class="text-sm text-steel-300">Konfirmoj që të dhënat janë të sakta dhe se nënshkrimi më përket mua. Pajtohem që Poligoni Patriot t'i përpunojë vetëm për procesin e trajnimit dhe certifikimit, sipas <a class="link-u text-bone" href="/privatesia/" target="_blank">politikës së privatësisë</a>.</span></label>
+          <p class="field-error -mt-6" data-error-for="consent" hidden>Duhet të konfirmoni për të vazhduar.</p>
+
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="btn btn-primary" type="submit"><svg aria-hidden="true"><use href="#i-send"/></svg>Nënshkruaj dhe dërgo kërkesën</button>
+            <p class="text-sm text-steel-400" data-progress aria-live="polite"></p>
           </div>
-          <label class="field"><span>Emaili *</span><input class="input" name="email" type="email" autocomplete="email" required maxlength="160" placeholder="emri@shembull.com"></label>
-        </fieldset>
+          <p class="field-error" data-form-error hidden></p>
+        </form>
 
-        <fieldset class="grid gap-3">
-          <legend class="t-h3 mb-6">Programi *</legend>
-          <label class="check"><input type="radio" name="program" value="shkurtra" required><span><b class="block font-semibold">Armë të shkurtra</b><span class="text-sm text-steel-400">Pistoleta dhe revolverë</span></span></label>
-          <label class="check"><input type="radio" name="program" value="gjata"><span><b class="block font-semibold">Armë të gjata</b><span class="text-sm text-steel-400">Pushkë dhe shotgunë</span></span></label>
-          <label class="check"><input type="radio" name="program" value="te-dyja"><span><b class="block font-semibold">Armë të shkurtra dhe të gjata</b><span class="text-sm text-steel-400">Programi i plotë</span></span></label>
-          <p class="field-error" data-error-for="program" hidden>Zgjidhni programin.</p>
-        </fieldset>
-
-        <fieldset class="grid gap-6">
-          <legend class="t-h3 mb-2">Letërnjoftimi *</legend>
-          <p class="text-sm text-steel-400 -mt-2">Fotografi të qarta ose PDF, deri në 5 MB secila. Fotot e mëdha kompresohen automatikisht.</p>
-          <div class="grid sm:grid-cols-2 gap-4">
-            <label class="drop" data-drop>
-              <input type="file" name="front" accept="image/jpeg,image/png,image/webp,application/pdf" required class="sr-only">
-              <span class="drop-ui"><svg aria-hidden="true"><use href="#i-card"/></svg><b>Ana e parë</b><small data-file-name>Zgjidhni ose tërhiqni skedarin</small></span>
-            </label>
-            <label class="drop" data-drop>
-              <input type="file" name="back" accept="image/jpeg,image/png,image/webp,application/pdf" required class="sr-only">
-              <span class="drop-ui"><svg aria-hidden="true"><use href="#i-card"/></svg><b>Ana e pasme</b><small data-file-name>Zgjidhni ose tërhiqni skedarin</small></span>
-            </label>
+        <div class="form-done" data-done hidden tabindex="-1">
+          <svg class="size-12 text-patriot" aria-hidden="true"><use href="#i-check"/></svg>
+          <h2 class="t-h2 mt-6">Kërkesa u nënshkrua dhe u dërgua</h2>
+          <p class="mt-4 text-steel-300 max-w-[48ch]">Faleminderit. Do t'ju telefonojmë për të caktuar grupin dhe datat e trajnimit. Mund ta ruani kopjen tuaj të kërkesës si PDF.</p>
+          <div class="flex flex-wrap gap-3 mt-8">
+            <button type="button" class="btn btn-primary" data-print-copy><svg aria-hidden="true"><use href="#i-cert"/></svg>Shkarko kopjen (PDF)</button>
+            <a href="https://wa.me/38349394850" data-setting-href="whatsapp" target="_blank" rel="noopener" class="btn btn-ghost"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
           </div>
-          <p class="field-error" data-error-for="files" hidden></p>
-        </fieldset>
-
-        <label class="field"><span>Mesazh (opsional)</span><textarea class="input" name="message" maxlength="2000" placeholder="P.sh. ditët që ju përshtaten më mirë"></textarea></label>
-        <label class="hp" aria-hidden="true">Mos e plotësoni këtë fushë<input name="website" tabindex="-1" autocomplete="off"></label>
-
-        <label class="check"><input type="checkbox" name="consent" required><span class="text-sm text-steel-300">Pajtohem që Poligoni Patriot të përpunojë të dhënat dhe dokumentet e mia vetëm për procesin e trajnimit dhe certifikimit, sipas <a class="link-u text-bone" href="/privatesia/" target="_blank">politikës së privatësisë</a>. *</span></label>
-        <p class="field-error -mt-8" data-error-for="consent" hidden>Duhet të pajtoheni për të vazhduar.</p>
-
-        <div class="flex flex-wrap items-center gap-4">
-          <button class="btn btn-primary" type="submit">Dërgo aplikimin</button>
-          <p class="text-sm text-steel-400" data-progress aria-live="polite"></p>
         </div>
-        <p class="field-error" data-form-error hidden></p>
-      </form>
+      </div>
 
-      <div class="form-done" data-done hidden tabindex="-1">
-        <svg class="size-12 text-patriot" aria-hidden="true"><use href="#i-check"/></svg>
-        <h2 class="t-h2 mt-6">Aplikimi u pranua</h2>
-        <p class="mt-4 text-steel-300 max-w-[46ch]">Faleminderit. Do t'ju telefonojmë për të caktuar grupin dhe datat e trajnimit. Nëse keni pyetje, na shkruani në WhatsApp.</p>
-        <a href="https://wa.me/38349394850" data-setting-href="whatsapp" target="_blank" rel="noopener" class="btn btn-ghost mt-8"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
+      <!-- ═══════════ 2. APLIKIMI I SHPEJTË (dytësor) ═══════════ -->
+      <div id="panel-online" role="tabpanel" aria-labelledby="tab-online" data-panel="online" hidden>
+        <p class="text-sm text-steel-400 mb-8 flex gap-3"><svg class="size-5 flex-none text-steel-300" aria-hidden="true"><use href="#i-cert"/></svg><span>Mënyrë alternative: dërgoni të dhënat dhe fotot e letërnjoftimit. Kërkesën zyrtare do ta nënshkruani në poligon.</span></p>
+        <form class="grid gap-10" novalidate data-apply-form>
+          <fieldset class="grid gap-6">
+            <legend class="t-h3 mb-6">Të dhënat personale</legend>
+            <label class="field"><span>Emri dhe mbiemri *</span><input class="input" name="full_name" autocomplete="name" required maxlength="120" placeholder="Si në letërnjoftim"></label>
+            <div class="grid sm:grid-cols-2 gap-6">
+              <label class="field"><span>Numri personal (letërnjoftimi) *</span><input class="input t-spec" name="id_number" required inputmode="numeric" maxlength="20" placeholder="10 shifra" autocomplete="off"></label>
+              <label class="field"><span>Telefoni *</span><input class="input" name="phone" type="tel" autocomplete="tel" required maxlength="40" placeholder="+383 4X XXX XXX"></label>
+            </div>
+            <label class="field"><span>Emaili *</span><input class="input" name="email" type="email" autocomplete="email" required maxlength="160" placeholder="emri@shembull.com"></label>
+          </fieldset>
+
+          <fieldset class="grid gap-3">
+            <legend class="t-h3 mb-6">Programi *</legend>
+            <label class="check"><input type="radio" name="program" value="shkurtra" required><span><b class="block font-semibold">Armë të shkurtra</b><span class="text-sm text-steel-400">Pistoleta dhe revolverë</span></span></label>
+            <label class="check"><input type="radio" name="program" value="gjata"><span><b class="block font-semibold">Armë të gjata</b><span class="text-sm text-steel-400">Pushkë dhe shotgunë</span></span></label>
+            <label class="check"><input type="radio" name="program" value="te-dyja"><span><b class="block font-semibold">Armë të shkurtra dhe të gjata</b><span class="text-sm text-steel-400">Programi i plotë</span></span></label>
+            <p class="field-error" data-error-for="program" hidden>Zgjidhni programin.</p>
+          </fieldset>
+
+          <fieldset class="grid gap-6">
+            <legend class="t-h3 mb-2">Letërnjoftimi *</legend>
+            <p class="text-sm text-steel-400 -mt-2">Fotografi të qarta ose PDF, deri në 5 MB secila. Fotot e mëdha kompresohen automatikisht.</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <label class="drop" data-drop>
+                <input type="file" name="front" accept="image/jpeg,image/png,image/webp,application/pdf" required class="sr-only">
+                <span class="drop-ui"><svg aria-hidden="true"><use href="#i-card"/></svg><b>Ana e parë</b><small data-file-name>Zgjidhni ose tërhiqni skedarin</small></span>
+              </label>
+              <label class="drop" data-drop>
+                <input type="file" name="back" accept="image/jpeg,image/png,image/webp,application/pdf" required class="sr-only">
+                <span class="drop-ui"><svg aria-hidden="true"><use href="#i-card"/></svg><b>Ana e pasme</b><small data-file-name>Zgjidhni ose tërhiqni skedarin</small></span>
+              </label>
+            </div>
+            <p class="field-error" data-error-for="files" hidden></p>
+          </fieldset>
+
+          <label class="field"><span>Mesazh (opsional)</span><textarea class="input" name="message" maxlength="2000" placeholder="P.sh. ditët që ju përshtaten më mirë"></textarea></label>
+          <label class="hp" aria-hidden="true">Mos e plotësoni këtë fushë<input name="website" tabindex="-1" autocomplete="off"></label>
+
+          <label class="check"><input type="checkbox" name="consent" required><span class="text-sm text-steel-300">Pajtohem që Poligoni Patriot të përpunojë të dhënat dhe dokumentet e mia vetëm për procesin e trajnimit dhe certifikimit, sipas <a class="link-u text-bone" href="/privatesia/" target="_blank">politikës së privatësisë</a>. *</span></label>
+          <p class="field-error -mt-8" data-error-for="consent" hidden>Duhet të pajtoheni për të vazhduar.</p>
+
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="btn btn-primary" type="submit">Dërgo aplikimin</button>
+            <p class="text-sm text-steel-400" data-progress aria-live="polite"></p>
+          </div>
+          <p class="field-error" data-form-error hidden></p>
+        </form>
+
+        <div class="form-done" data-done hidden tabindex="-1">
+          <svg class="size-12 text-patriot" aria-hidden="true"><use href="#i-check"/></svg>
+          <h2 class="t-h2 mt-6">Aplikimi u pranua</h2>
+          <p class="mt-4 text-steel-300 max-w-[46ch]">Faleminderit. Do t'ju telefonojmë për të caktuar grupin dhe datat e trajnimit. Nëse keni pyetje, na shkruani në WhatsApp.</p>
+          <a href="https://wa.me/38349394850" data-setting-href="whatsapp" target="_blank" rel="noopener" class="btn btn-ghost mt-8"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
+        </div>
       </div>
     </div>
 
@@ -78,8 +191,28 @@
       <div class="lg:sticky lg:top-28 grid gap-6">
         <h2 class="t-h3">Pas aplikimit</h2>
         {{> cert-steps}}
-        <p class="text-sm text-steel-400 flex gap-3"><svg class="size-5 flex-none text-steel-300" aria-hidden="true"><use href="#i-shield"/></svg>Dokumentet ruhen në hapësirë të mbyllur, të qasshme vetëm nga administrata, dhe nuk ndahen me palë të treta.</p>
+        <p class="text-sm text-steel-400 flex gap-3"><svg class="size-5 flex-none text-steel-300" aria-hidden="true"><use href="#i-shield"/></svg>Kërkesa, nënshkrimi dhe dokumentet ruhen në hapësirë të mbyllur, të qasshme vetëm nga administrata, dhe nuk ndahen me palë të treta.</p>
       </div>
     </aside>
   </div>
 </section>
+
+<!-- Nënshkrimi në ekran të plotë (më i lehtë në telefon) -->
+<div class="sig-modal" data-sig-modal hidden role="dialog" aria-modal="true" aria-labelledby="sig-modal-title">
+  <div class="sig-modal-in">
+    <div class="sig-modal-top">
+      <p id="sig-modal-title" class="font-semibold">Nënshkrimi</p>
+      <p class="sig-rotate">Për më shumë hapësirë, ktheni telefonin horizontalisht.</p>
+    </div>
+    <div class="sig-pad sig-pad-xl" data-sig-wrap-xl>
+      <canvas data-sig-xl aria-label="Fusha e nënshkrimit"></canvas>
+      <span class="sig-x" aria-hidden="true">✕</span>
+      <span class="sig-line" aria-hidden="true"></span>
+    </div>
+    <div class="sig-modal-bar">
+      <button type="button" class="btn btn-ghost btn-sm" data-xl-clear>Pastro</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-xl-cancel>Anulo</button>
+      <button type="button" class="btn btn-primary btn-sm" data-xl-save><svg aria-hidden="true"><use href="#i-check"/></svg>Ruaj nënshkrimin</button>
+    </div>
+  </div>
+</div>

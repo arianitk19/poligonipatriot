@@ -445,6 +445,8 @@
   .a-stat:hover { border-color: var(--color-steel-600); }
   .a-row { display: grid; grid-template-columns: 1fr auto; gap: 0.2rem 1rem; padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--color-steel-800); transition: background-color 0.15s; }
   .a-row:last-child { border-bottom: 0; }
+  .a-sig-box { display: grid; place-items: center; min-height: 7.5rem; padding: 0.9rem 1.2rem; border-radius: 0.6rem; background: #fbfaf7; border: 1px solid var(--color-steel-700); }
+  .a-sig-box img { max-width: 100%; max-height: 8rem; width: auto; height: auto; }
   .a-row > :nth-child(2) { grid-column: 1; }
   .a-row > :nth-child(3) { grid-column: 2; grid-row: 1; text-align: right; }
   .a-row > .a-badge { grid-column: 2; grid-row: 2; justify-self: end; }
@@ -1346,3 +1348,103 @@ html, body { overflow-x: hidden; }
 .page-hero { overflow-x: clip; }
 html.is-scrolling .range-svg *, html.is-scrolling .cert-svg *, html.is-scrolling .std-ico *, html.is-scrolling .hero-target * { animation-play-state: paused !important; }
 .range-art, .cert-art { contain: layout paint; }
+
+/* ═══════════ Aplikimi: kërkesa zyrtare me nënshkrim digjital ═══════════ */
+@layer components {
+  /* Zgjedhja e mënyrës */
+  .apply-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; margin-bottom: 2.25rem; }
+  .apply-modes [role="tab"] { position: relative; display: flex; align-items: center; gap: 0.85rem; padding: 1rem 1.1rem; text-align: left; border: 1px solid var(--color-steel-800); border-radius: 0.85rem; background: color-mix(in oklab, var(--color-steel-900) 70%, transparent); color: var(--color-steel-300); transition: border-color 0.25s, background-color 0.25s, color 0.25s, transform 0.25s var(--ease-out-expo, ease); }
+  .apply-modes [role="tab"]:hover { border-color: var(--color-steel-600); color: var(--color-bone); }
+  .apply-modes [role="tab"][aria-selected="true"] { border-color: var(--color-patriot); color: var(--color-bone); background: linear-gradient(135deg, rgb(227 52 59 / 0.16), rgb(227 52 59 / 0.03) 70%); box-shadow: 0 18px 40px -24px rgb(227 52 59 / 0.7); }
+  .am-ico { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; flex: none; border-radius: 0.65rem; background: var(--color-steel-850); transition: background-color 0.25s, color 0.25s; }
+  .am-ico svg { width: 1.3rem; height: 1.3rem; }
+  [aria-selected="true"] .am-ico { background: var(--color-patriot); color: #fff; }
+  .am-txt { display: grid; gap: 0.15rem; min-width: 0; }
+  .am-txt b { font-weight: 650; color: inherit; line-height: 1.2; }
+  .am-txt small { font-size: 0.8rem; color: var(--color-steel-400); line-height: 1.3; }
+  .am-tag { position: absolute; top: -0.6rem; right: 0.8rem; padding: 0.2rem 0.55rem; border-radius: 999px; background: var(--color-patriot); color: #fff; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; box-shadow: 0 6px 16px -6px rgb(227 52 59 / 0.8); }
+  @media (max-width: 520px) {
+    .apply-modes [role="tab"] { flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: 0.95rem; }
+    .am-ico { width: 2.2rem; height: 2.2rem; }
+  }
+
+  /* Fleta e kërkesës */
+  .paper { --ink: #13213f; --line: #1b1b1e; position: relative; display: grid; gap: 1.9rem; padding: clamp(1.15rem, 4.2vw, 3rem); border-radius: 1rem; background: #fbfaf7; color: #111113; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06), 0 40px 90px -40px rgb(0 0 0 / 0.95), 0 0 120px -50px rgb(227 52 59 / 0.35); animation: paper-in 0.9s var(--ease-out-expo, ease) both; }
+  .paper::before { content: ""; position: absolute; inset: 0 0 auto; height: 4px; border-radius: 1rem 1rem 0 0; background: linear-gradient(90deg, var(--color-patriot), #ff6a6f 50%, var(--color-patriot)); }
+  @keyframes paper-in { from { opacity: 0; transform: translateY(18px); } }
+  .paper .field-error { color: #c4262d; font-weight: 600; }
+  .paper-head { border: 1.5px solid var(--line); border-radius: 1.6rem; padding: 1rem 1rem 0.8rem; text-align: center; font-size: clamp(0.62rem, 1.9vw, 0.78rem); line-height: 1.5; letter-spacing: 0.01em; }
+  .paper-head img { display: block; width: auto; height: clamp(3.4rem, 13vw, 5.6rem); margin: 0 auto 0.55rem; }
+  .paper-head b { font-weight: 750; }
+  .paper-title { text-align: center; font-weight: 750; font-size: clamp(1.15rem, 3.4vw, 1.5rem); letter-spacing: -0.01em; line-height: 1.25; margin-top: 0.4rem; }
+
+  .pf-group { display: grid; gap: 0.55rem; align-content: start; }
+  .pf-label { font-size: 0.86rem; font-weight: 750; color: #1b1b1e; }
+  .pf-name { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1rem; }
+  .pf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.7rem 1.5rem; }
+  @media (max-width: 640px) { .pf-name, .pf-grid { grid-template-columns: 1fr; } .pf-name { gap: 0.9rem; } }
+  .pf { position: relative; display: grid; }
+  .pf input { width: 100%; min-height: 2.75rem; padding: 0.5rem 0.15rem 0.4rem; border: 0; border-bottom: 1.5px solid var(--line); border-radius: 0; background: transparent; color: var(--ink); font-size: 1.08rem; font-weight: 550; color-scheme: light; transition: border-color 0.2s, background-color 0.2s; }
+  .pf input::placeholder { color: #a3a19b; font-weight: 400; }
+  .pf input:hover { background: rgb(0 0 0 / 0.025); }
+  .pf input:focus { outline: none; border-bottom-color: var(--color-patriot); background: linear-gradient(to top, rgb(227 52 59 / 0.08), transparent 70%); }
+  .pf input[aria-invalid="true"] { border-bottom-color: var(--color-patriot); }
+  .pf > span:not(.sr-only) { order: 2; margin-top: 0.35rem; font-size: 0.68rem; font-weight: 650; letter-spacing: 0.09em; text-transform: uppercase; color: #6f6d68; }
+  .pf-date input { font-family: inherit; }
+
+  .pf-classes { display: grid; gap: 0.35rem; border: 0; padding: 0; margin: 0.3rem 0 0; min-width: 0; }
+  .pf-classes legend { width: 100%; text-align: center; font-weight: 750; font-size: clamp(0.92rem, 2.4vw, 1.02rem); line-height: 1.45; margin-bottom: 0.9rem; }
+  .pf-opt { position: relative; display: grid; grid-template-columns: 2rem 1.45rem 1fr; align-items: center; gap: 0.75rem; padding: 0.8rem 0.9rem; border-radius: 0.7rem; border: 1px solid transparent; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+  .pf-opt:hover { background: #f1efe9; }
+  .pf-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .pf-l { font-weight: 750; }
+  .pf-box { display: grid; place-items: center; width: 1.45rem; height: 1.45rem; border: 1.6px solid var(--line); border-radius: 0.3rem; background: #fff; transition: background-color 0.2s, border-color 0.2s, transform 0.2s; }
+  .pf-box svg { width: 1rem; height: 1rem; color: #fff; opacity: 0; transform: scale(0.4); transition: opacity 0.2s, transform 0.3s var(--ease-out-expo, ease); }
+  .pf-t { font-weight: 700; }
+  .pf-opt:has(input:checked) { background: rgb(227 52 59 / 0.07); border-color: rgb(227 52 59 / 0.35); }
+  .pf-opt input:checked ~ .pf-box { background: var(--color-patriot); border-color: var(--color-patriot); }
+  .pf-opt input:checked ~ .pf-box svg { opacity: 1; transform: none; }
+  .pf-opt input:focus-visible ~ .pf-box { outline: 2px solid var(--color-patriot); outline-offset: 3px; }
+  .pf-hint { font-size: 0.78rem; color: #6f6d68; padding-left: 0.9rem; margin-top: 0.2rem; }
+
+  .pf-big { font-size: clamp(1.25rem, 3.4vw, 1.55rem); font-weight: 750; }
+  .pf-sign { display: grid; gap: 0.75rem; margin-top: 0.4rem; }
+  .pf-sign-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .pf-tools { display: flex; gap: 0.4rem; }
+  .pf-tool { display: inline-flex; align-items: center; gap: 0.35rem; height: 2.1rem; padding: 0 0.75rem; border-radius: 999px; border: 1px solid #d6d3cb; background: #fff; color: #2a2a2e; font-size: 0.8rem; font-weight: 650; transition: border-color 0.2s, background-color 0.2s, opacity 0.2s; }
+  .pf-tool svg { width: 0.95rem; height: 0.95rem; }
+  .pf-tool:hover:not(:disabled) { border-color: #1b1b1e; }
+  .pf-tool:disabled { opacity: 0.4; cursor: default; }
+  @media (max-width: 420px) { .pf-tool span { display: none; } .pf-tool { width: 2.3rem; padding: 0; justify-content: center; } }
+
+  .sig-pad { position: relative; aspect-ratio: 5 / 2; border-radius: 0.85rem; background: #fff; border: 1.5px dashed #c9c6bd; overflow: hidden; transition: border-color 0.25s, box-shadow 0.25s; }
+  .sig-pad:hover { border-color: #9d9a92; }
+  .sig-pad:has(canvas.is-drawing), .sig-pad.has-ink { border-style: solid; border-color: #b9b6ad; }
+  .sig-pad:has(canvas.is-drawing) { box-shadow: 0 0 0 4px rgb(227 52 59 / 0.12); border-color: var(--color-patriot); }
+  .sig-pad[aria-invalid] { border-color: var(--color-patriot); border-style: solid; }
+  .sig-pad canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; z-index: 2; }
+  .sig-line { position: absolute; left: 7%; right: 7%; bottom: 26%; border-bottom: 1.5px solid #2a2a2e; opacity: 0.55; pointer-events: none; }
+  .sig-x { position: absolute; left: 7%; bottom: calc(26% + 0.35rem); font-size: 0.95rem; font-weight: 700; color: #2a2a2e; opacity: 0.55; pointer-events: none; }
+  .sig-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 0.55rem; padding-bottom: 8%; color: #9a978f; font-size: 0.9rem; font-weight: 600; pointer-events: none; transition: opacity 0.3s; }
+  .sig-hint svg { width: 1.5rem; height: 1.5rem; animation: sig-hint 2.4s ease-in-out infinite; }
+  @keyframes sig-hint { 50% { transform: translateX(6px) rotate(-6deg); } }
+  .sig-hint-touch { display: none; }
+  @media (hover: none) { .sig-hint-touch { display: inline; } .sig-hint-mouse { display: none; } }
+  .sig-pad.has-ink .sig-hint, .sig-pad:has(canvas.is-drawing) .sig-hint { opacity: 0; }
+
+  .pf-date-row { display: flex; align-items: flex-end; gap: 0.9rem; }
+  .pf-date-val { min-width: 11rem; padding: 0 0.2rem 0.3rem; border-bottom: 1.5px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .paper-foot { border-top: 1.5px solid var(--line); padding-top: 0.75rem; text-align: center; font-weight: 750; font-size: clamp(0.68rem, 2vw, 0.82rem); }
+
+  /* Nënshkrimi në ekran të plotë */
+  .sig-modal { position: fixed; inset: 0; z-index: 140; background: rgb(6 6 7 / 0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); animation: sig-modal-in 0.35s ease both; }
+  @keyframes sig-modal-in { from { opacity: 0; } }
+  .sig-modal-in { height: 100%; height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; gap: 1rem; padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom)); }
+  .sig-modal-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; color: var(--color-bone); }
+  .sig-rotate { display: none; font-size: 0.82rem; color: var(--color-steel-400); }
+  @media (orientation: portrait) and (max-width: 760px) { .sig-rotate { display: block; } }
+  .sig-modal .sig-pad-xl { align-self: center; justify-self: center; width: min(100%, calc((100dvh - 9.5rem) * 2.5)); border-style: solid; }
+  .sig-modal-bar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.6rem; }
+  html.sig-open { overflow: hidden; }
+  html.sig-open .dock, html.sig-open .bullet-top { display: none; }
+}

@@ -93,6 +93,7 @@ returns text language sql immutable set search_path = '' as $$
 $$;
 
 -- ───────── Aplikim i ri për certifikim ─────────
+-- Numri personal, letërnjoftimi dhe nënshkrimi NUK dërgohen; shihen vetëm në panel.
 create or replace function public.notify_new_application()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare
@@ -100,19 +101,22 @@ declare
     when 'shkurtra' then 'Armë të shkurtra'
     when 'gjata' then 'Armë të gjata'
     else 'Armë të shkurtra dhe të gjata' end;
+  kind_label text := case when new.kind = 'kerkese' then 'Kërkesë zyrtare me nënshkrim' else 'Aplikim online' end;
   site text := coalesce(public.notify_secret('site_url'), 'https://poligonipatriot.com');
   tel text := regexp_replace(new.phone, '[^0-9+]', '', 'g');
 begin
-  -- Numri personal dhe letërnjoftimi NUK dërgohen me email; shihen vetëm në panel.
   perform public.send_notification(
     'Aplikim i ri: ' || new.full_name || ' (' || program_label || ')',
     public.mail_layout(
       'Aplikim i ri për certifikim',
       public.mail_row('Emri', public.html_esc(new.full_name))
+        || public.mail_row('Lloji', public.html_esc(kind_label))
         || public.mail_row('Programi', public.html_esc(program_label))
         || public.mail_row('Telefoni', '<a style="color:#f6f5f2" href="tel:' || public.html_esc(tel) || '">' || public.html_esc(new.phone) || '</a>')
-        || public.mail_row('Emaili', public.html_esc(new.email))
-        || public.mail_row('Letërnjoftimi', case when new.id_front_path is not null then 'Ngarkuar, shihet në panel' else 'Mungon' end),
+        || case when new.email is not null then public.mail_row('Emaili', public.html_esc(new.email)) else '' end
+        || case when new.kind = 'kerkese'
+             then public.mail_row('Nënshkrimi', 'Nënshkruar digjitalisht, shihet në panel')
+             else public.mail_row('Letërnjoftimi', case when new.id_front_path is not null then 'Ngarkuar, shihet në panel' else 'Mungon' end) end,
       case when new.message is not null then public.html_esc(new.message) end,
       site || '/admin/#/aplikimet/' || new.id,
       'Hap aplikimin në panel'
@@ -122,6 +126,7 @@ begin
   perform public.send_whatsapp(
     '*Aplikim i ri për certifikim*' || chr(10)
     || new.full_name || chr(10)
+    || kind_label || chr(10)
     || program_label || chr(10)
     || 'Tel: ' || new.phone || chr(10)
     || site || '/admin/#/aplikimet/' || new.id

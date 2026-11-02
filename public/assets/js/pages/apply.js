@@ -1,17 +1,176 @@
 import { submitApplication } from '../data.js';
 import { fieldError, isEmail, isPhone, looksLikeBot, compressImage, showDone, friendlyError } from '../forms.js';
 import { toast } from '../app.js';
+import { createSignaturePad } from '../signature.js';
+import { printKerkesa, dmy } from '../kerkesa-doc.js';
 
+const started = Date.now();
+const params = new URLSearchParams(location.search);
+const pre = params.get('programi');
+
+/* ───────────────────────── Zgjedhja e mënyrës (skeda) ───────────────────────── */
+const tabs = [...document.querySelectorAll('.apply-modes [role="tab"]')];
+function setMode(mode, focus = false) {
+  tabs.forEach((t) => {
+    const on = t.dataset.mode === mode;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    if (on && focus) t.focus();
+  });
+  document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== mode; });
+  if (mode === 'kerkese') pad?.refit();
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => setMode(t.dataset.mode));
+  t.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    setMode(tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length].dataset.mode, true);
+  });
+});
+
+/* ───────────────────────── 1. Kërkesa zyrtare me nënshkrim ───────────────────────── */
+const kForm = document.querySelector('[data-kerkese-form]');
+const now = new Date();
+const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+kForm.querySelector('[data-today]').textContent = dmy(todayIso);
+kForm.elements.birth_date.max = todayIso;
+
+if (pre === 'shkurtra' || pre === 'te-dyja') kForm.querySelector('input[name="weapon_classes"][value="A"]').checked = true;
+
+const sigWrap = kForm.querySelector('[data-sig-wrap]');
+const undoBtn = kForm.querySelector('[data-sig-undo]');
+const clearBtn = kForm.querySelector('[data-sig-clear]');
+const syncSig = () => {
+  const empty = pad.isEmpty();
+  sigWrap.classList.toggle('has-ink', !empty);
+  undoBtn.disabled = empty; clearBtn.disabled = empty;
+  if (!empty) { fieldError(kForm, 'signature', ''); sigWrap.removeAttribute('aria-invalid'); }
+};
+const pad = createSignaturePad(kForm.querySelector('[data-sig]'), { onChange: () => syncSig() });
+undoBtn.addEventListener('click', () => pad.undo());
+clearBtn.addEventListener('click', () => pad.clear());
+
+// Ekrani i plotë: fushë e madhe për nënshkrim, sidomos në telefon
+const modal = document.querySelector('[data-sig-modal]');
+document.body.append(modal);
+let xl = null;
+function openXL() {
+  modal.hidden = false;
+  document.documentElement.classList.add('sig-open');
+  window.ppLenis?.stop?.();
+  if (!xl) xl = createSignaturePad(modal.querySelector('[data-sig-xl]'));
+  requestAnimationFrame(() => { xl.refit(); xl.strokes = pad.strokes; });
+  modal.querySelector('[data-xl-save]').focus({ preventScroll: true });
+}
+function closeXL(save) {
+  if (save && xl) pad.strokes = xl.strokes;
+  modal.hidden = true;
+  document.documentElement.classList.remove('sig-open');
+  window.ppLenis?.start?.();
+  kForm.querySelector('[data-sig-full]').focus({ preventScroll: true });
+}
+kForm.querySelector('[data-sig-full]').addEventListener('click', openXL);
+modal.querySelector('[data-xl-clear]').addEventListener('click', () => xl?.clear());
+modal.querySelector('[data-xl-cancel]').addEventListener('click', () => closeXL(false));
+modal.querySelector('[data-xl-save]').addEventListener('click', () => closeXL(true));
+modal.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeXL(false); });
+
+// Gabimet hiqen sapo përdoruesi korrigjon fushën
+kForm.addEventListener('input', (e) => {
+  const n = e.target.name;
+  if (['first_name', 'father_name', 'last_name'].includes(n)) { fieldError(kForm, 'name', ''); e.target.removeAttribute('aria-invalid'); }
+  else if (n === 'weapon_classes') fieldError(kForm, 'weapon_classes', '');
+  else if (n && kForm.querySelector(`[data-error-for="${n}"]`)) fieldError(kForm, n, '');
+});
+
+const cap = (s) => s.trim().replace(/\s+/g, ' ');
+function validateKerkese() {
+  const f = kForm.elements;
+  let ok = true;
+  const bad = (name, msg) => { fieldError(kForm, name, msg); if (msg) ok = false; };
+
+  const names = ['first_name', 'father_name', 'last_name'];
+  const miss = names.filter((n) => cap(f[n].value).length < 2);
+  names.forEach((n) => f[n].setAttribute('aria-invalid', String(miss.includes(n))));
+  bad('name', miss.length ? 'Shkruani emrin, emrin e babait dhe mbiemrin.' : '');
+
+  const bd = f.birth_date.value;
+  const y = Number(bd.slice(0, 4));
+  bad('birth_date', !bd ? 'Zgjidhni datën e lindjes.' : bd > todayIso || y < 1900 ? 'Data e lindjes nuk është e saktë.' : '');
+  bad('birth_place', cap(f.birth_place.value).length < 2 ? 'Shkruani vendin dhe shtetin e lindjes.' : '');
+  bad('phone', isPhone(f.phone.value) ? '' : 'Shkruani një numër telefoni të vlefshëm.');
+  bad('id_number', /^\d{8,12}$/.test(f.id_number.value.replace(/\s/g, '')) ? '' : 'Numri i letërnjoftimit duhet të ketë vetëm shifra (zakonisht 10).');
+
+  const classes = [...kForm.querySelectorAll('input[name="weapon_classes"]:checked')].map((i) => i.value);
+  bad('weapon_classes', classes.length ? '' : 'Zgjidhni të paktën një nga A, B ose C.');
+
+  const sigMsg = pad.isEmpty() ? 'Nënshkruani kërkesën në fushën e nënshkrimit.' : pad.inkLength() < 60 ? 'Nënshkrimi është shumë i shkurtër. Nënshkruani si zakonisht.' : '';
+  bad('signature', sigMsg);
+  sigWrap.toggleAttribute('aria-invalid', Boolean(sigMsg));
+
+  bad('consent', f.consent.checked ? '' : 'Duhet të konfirmoni për të vazhduar.');
+  if (!ok) return null;
+
+  const first = cap(f.first_name.value), father = cap(f.father_name.value), last = cap(f.last_name.value);
+  const hasA = classes.includes('A'), hasLong = classes.includes('B') || classes.includes('C');
+  return {
+    kind: 'kerkese',
+    full_name: `${first} ${last}`,
+    first_name: first,
+    father_name: father,
+    last_name: last,
+    birth_date: bd,
+    birth_place: cap(f.birth_place.value),
+    phone: f.phone.value.trim(),
+    id_number: f.id_number.value.replace(/\s/g, ''),
+    weapon_classes: classes,
+    program: hasA && hasLong ? 'te-dyja' : hasA ? 'shkurtra' : 'gjata',
+    signed_on: todayIso,
+    consent: true,
+  };
+}
+
+let lastCopy = null;
+kForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const err = kForm.querySelector('[data-form-error]');
+  err.hidden = true;
+  const data = validateKerkese();
+  if (!data) {
+    kForm.querySelector('[aria-invalid="true"], [data-error-for]:not([hidden])')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (looksLikeBot(kForm, started)) { showDone(kForm); return; }
+  const btn = kForm.querySelector('button[type="submit"]');
+  const progress = kForm.querySelector('[data-progress]');
+  btn.setAttribute('aria-busy', 'true');
+  try {
+    progress.textContent = 'Duke përgatitur nënshkrimin…';
+    const sig = await pad.toFile('nenshkrimi.png');
+    progress.textContent = 'Duke dërguar kërkesën…';
+    const r = await submitApplication(data, { nenshkrimi: sig });
+    if (r.offline) toast('Mënyra demo: lidhni Supabase te config.js që kërkesat të ruhen.');
+    const sigUrl = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(sig); });
+    lastCopy = { data: { ...data, id: r.id }, sigUrl };
+    showDone(kForm);
+  } catch (ex) {
+    console.error(ex);
+    err.textContent = friendlyError(ex); err.hidden = false;
+  } finally {
+    btn.removeAttribute('aria-busy'); progress.textContent = '';
+  }
+});
+document.querySelector('[data-print-copy]').addEventListener('click', () => { if (lastCopy) printKerkesa(lastCopy.data, lastCopy.sigUrl); });
+
+/* ───────────────────────── 2. Aplikimi i shpejtë (me foto të letërnjoftimit) ───────────────────────── */
 const form = document.querySelector('[data-apply-form]');
 const progress = form.querySelector('[data-progress]');
-const started = Date.now();
 const MAX = 5 * 1024 * 1024;
 const OK_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 
-const pre = new URLSearchParams(location.search).get('programi');
 if (pre) { const r = form.querySelector(`input[name="program"][value="${CSS.escape(pre)}"]`); if (r) r.checked = true; }
 
-// Zonat e ngarkimit me tërheqje
 form.querySelectorAll('[data-drop]').forEach((drop) => {
   const input = drop.querySelector('input[type="file"]');
   const label = drop.querySelector('[data-file-name]');
@@ -78,3 +237,5 @@ form.addEventListener('submit', async (e) => {
     btn.removeAttribute('aria-busy'); progress.textContent = '';
   }
 });
+
+if (params.get('menyra') === 'online') setMode('online');
