@@ -17,7 +17,7 @@ export function whatsappLink(text, number = CONFIG.site.whatsapp) {
 }
 
 export function productSpecsLine(p) {
-  return [p.caliber, p.capacity ? `${p.capacity} fishekë` : null].filter(Boolean).join(' · ');
+  return [p.caliber, p.capacity ? `${p.capacity} fishekë` : null, p.category_slug === 'mirembajtje' && p.weight && !String(p.name).includes(p.weight) ? p.weight : null].filter(Boolean).join(' · ');
 }
 
 export function productCard(p, { lazy = true } = {}) {

@@ -24,7 +24,7 @@ function render(p, cat, settings) {
   const imgs = (p.images || []).map(mediaUrl);
   const specs = [
     ['Marka', p.brand], ['Kategoria', cat?.name], ['Kalibri', p.caliber], ['Karikatori', p.capacity ? `${p.capacity} fishekë` : null],
-    ['Gjatësia e tytës', p.barrel_length], ['Pesha', p.weight], ['Mekanizmi', p.action], ['Origjina', p.origin],
+    ['Gjatësia e tytës', p.barrel_length], [p.category_slug === 'mirembajtje' ? 'Sasia' : 'Pesha', p.weight], ['Mekanizmi', p.action], ['Origjina', p.origin],
   ].filter(([, v]) => v);
   const msg = `Përshëndetje, jam i interesuar për ${p.name}. A është në dispozicion dhe sa kushton?\n${location.href}`;
   const tel = (settings.phone || '+38349394850').replace(/\s/g, '');
@@ -53,10 +53,13 @@ function render(p, cat, settings) {
         <a class="btn btn-primary" href="${esc(whatsappLink(msg, settings.whatsapp))}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg>Pyet në WhatsApp</a>
         <a class="btn btn-ghost" href="tel:${esc(tel)}"><svg aria-hidden="true"><use href="#i-phone"/></svg>Telefono</a>
       </div>
-      <div class="rounded-lg border border-steel-800 p-5 text-sm text-steel-300 flex gap-3">
+      ${p.category_slug === 'mirembajtje' ? `<div class="rounded-lg border border-steel-800 p-5 text-sm text-steel-300 flex gap-3">
+        <svg class="size-5 flex-none text-patriot mt-0.5" aria-hidden="true"><use href="#i-check"/></svg>
+        <p>Produkt për kujdesin e armës. Na shkruani në WhatsApp për çmimin dhe disponueshmërinë, ose kaloni nga dyqani.</p>
+      </div>` : `<div class="rounded-lg border border-steel-800 p-5 text-sm text-steel-300 flex gap-3">
         <svg class="size-5 flex-none text-patriot mt-0.5" aria-hidden="true"><use href="#i-shield"/></svg>
         <p>Shitja bëhet vetëm për persona që plotësojnë kushtet e Ligjit për armët. Pa leje ende? <a class="link-u text-bone" href="/trajnimet-certifikimet/">Filloni me certifikimin</a>.</p>
-      </div>
+      </div>`}
     </div>`;
 
   const main = box.querySelector('[data-main] img');

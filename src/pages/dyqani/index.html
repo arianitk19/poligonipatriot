@@ -17,7 +17,7 @@
 
 <section class="pb-24" aria-label="Katalogu">
   <div class="wrap">
-    <div class="flex gap-2 overflow-x-auto [scrollbar-width:none] -mx-4 px-4 pb-1" role="toolbar" aria-label="Kategoritë" data-cats>
+    <div class="cat-row" role="toolbar" aria-label="Kategoritë" data-cats>
       <button type="button" class="chip" aria-pressed="true" data-cat="">Të gjitha</button>
     </div>
 
@@ -26,7 +26,7 @@
         <label class="sb-search">
           <span class="sr-only">Kërko</span>
           <svg class="sb-search-ico" aria-hidden="true"><use href="#i-search"/></svg>
-          <input type="search" placeholder="Kërko modelin, markën, kalibrin…" data-q autocomplete="off" enterkeyhint="search">
+          <input type="search" placeholder="Kërko produktin, markën, kalibrin…" data-q autocomplete="off" enterkeyhint="search">
           <button type="button" class="sb-clear" aria-label="Fshi kërkimin" data-clear hidden><svg aria-hidden="true"><use href="#i-close"/></svg></button>
         </label>
         <button type="button" class="sb-filter-btn" aria-haspopup="dialog" aria-controls="sb-panel" data-open-filters>
@@ -38,17 +38,20 @@
             <b>Filtrat</b>
             <button type="button" class="sb-x" aria-label="Mbyll filtrat" data-close-filters><svg aria-hidden="true"><use href="#i-close"/></svg></button>
           </div>
-          <label class="sb-field"><span>Marka</span><select class="sb-select" data-brand><option value="">Të gjitha markat</option></select></label>
-          <label class="sb-field"><span>Kalibri</span><select class="sb-select" data-caliber><option value="">Të gjithë kalibrat</option></select></label>
-          <label class="sb-field"><span>Renditja</span><select class="sb-select" data-sort>
-            <option value="">Të rekomanduarat</option>
-            <option value="name">Emri A–Z</option>
-            <option value="price-asc">Çmimi: nga më i ulëti</option>
-            <option value="price-desc">Çmimi: nga më i larti</option>
-          </select></label>
+          <div class="sb-body">
+            <div class="sb-field sb-only-m"><span>Kategoria</span><div class="sb-chips" data-chips="cat"></div></div>
+            <div class="sb-field"><span>Marka</span><select class="sb-select" data-brand aria-label="Marka"><option value="">Të gjitha markat</option></select><div class="sb-chips" data-chips="brand"></div></div>
+            <div class="sb-field" data-caliber-field><span>Kalibri</span><select class="sb-select" data-caliber aria-label="Kalibri"><option value="">Të gjithë kalibrat</option></select><div class="sb-chips" data-chips="caliber"></div></div>
+            <div class="sb-field"><span>Renditja</span><select class="sb-select" data-sort aria-label="Renditja">
+              <option value="">Të rekomanduarat</option>
+              <option value="name">Emri A–Z</option>
+              <option value="price-asc">Çmimi: nga më i ulëti</option>
+              <option value="price-desc">Çmimi: nga më i larti</option>
+            </select><div class="sb-chips" data-chips="sort"></div></div>
+          </div>
           <div class="sb-panel-foot">
             <button type="button" class="btn btn-ghost" data-reset-sheet>Pastro</button>
-            <button type="button" class="btn btn-primary" data-close-filters data-apply>Shfaq armët</button>
+            <button type="button" class="btn btn-primary" data-close-filters data-apply>Shfaq produktet</button>
           </div>
         </div>
       </div>

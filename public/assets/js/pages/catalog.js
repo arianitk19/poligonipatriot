@@ -50,7 +50,8 @@ function render() {
 
   grid.innerHTML = list.map((p, i) => productCard(p, { lazy: i > 7 })).join('');
   els.empty.classList.toggle('hidden', list.length > 0);
-  els.count.innerHTML = `<b>${list.length}</b> ${list.length === 1 ? 'armë' : 'armë'}`;
+  els.count.innerHTML = `<b>${list.length}</b> ${list.length === 1 ? 'produkt' : 'produkte'}`;
+  renderChips(inCat);
   renderBar(list.length);
   const filtered = state.q || state.brand || state.caliber || state.sort;
   document.querySelectorAll('[data-reset]').forEach((b) => b.classList.toggle('hidden', !filtered && b.closest('[data-empty]') === null));
@@ -77,6 +78,31 @@ Promise.all([getProducts(), getCategories()]).then(([p, c]) => {
   els.count.textContent = 'Katalogu nuk u ngarkua. Provoni sërish.';
 });
 
+// Në telefon filtrat zgjidhen me butona (chips) në vend të listave rënëse
+const chipBox = (k) => document.querySelector(`[data-chips="${k}"]`);
+const SORT_OPTS = [['', 'Të rekomanduarat'], ['name', 'Emri A–Z'], ['price-asc', 'Çmimi ↑'], ['price-desc', 'Çmimi ↓']];
+function chipsHtml(key, items, cur) {
+  return items.map(([v, label, n]) => `<button type="button" class="sb-chip" data-k="${key}" data-v="${esc(v)}" aria-pressed="${v === cur}">${esc(label)}${n != null ? ` <span>${n}</span>` : ''}</button>`).join('');
+}
+function renderChips(inCat) {
+  const count = (key) => inCat.reduce((m, p) => (p[key] ? ((m[p[key]] = (m[p[key]] || 0) + 1), m) : m), {});
+  const brands = count('brand'), cals = count('caliber');
+  chipBox('cat').innerHTML = chipsHtml('cat', [['', 'Të gjitha', products.length], ...categories.filter((c) => products.some((p) => p.category_slug === c.slug)).map((c) => [c.slug, c.name, products.filter((p) => p.category_slug === c.slug).length])], state.cat);
+  chipBox('brand').innerHTML = chipsHtml('brand', [['', 'Të gjitha', null], ...Object.keys(brands).sort((a, b) => a.localeCompare(b)).map((b) => [b, b, brands[b]])], state.brand);
+  const calKeys = Object.keys(cals).sort();
+  chipBox('caliber').innerHTML = chipsHtml('caliber', [['', 'Të gjithë', null], ...calKeys.map((c) => [c, c, cals[c]])], state.caliber);
+  document.querySelector('[data-caliber-field]').hidden = calKeys.length === 0;
+  chipBox('sort').innerHTML = chipsHtml('sort', SORT_OPTS.map(([v, l]) => [v, l, null]), state.sort);
+}
+document.addEventListener('click', (e) => {
+  const c = e.target.closest('.sb-chip');
+  if (!c) return;
+  const { k, v } = c.dataset;
+  if (k === 'cat') { state.cat = v; state.brand = ''; state.caliber = ''; }
+  else { state[k] = v; if (k === 'sort') els.sort.value = v; }
+  render();
+});
+
 els.cats.addEventListener('click', (e) => {
   const b = e.target.closest('[data-cat]');
   if (!b) return;
@@ -94,7 +120,7 @@ function renderBar(n) {
   const active = [state.brand, state.caliber, state.sort].filter(Boolean).length;
   bar.badge.hidden = !active; bar.badge.textContent = active;
   [els.brand, els.caliber, els.sort].forEach((s) => s.closest('.sb-field').classList.toggle('is-set', Boolean(s.value)));
-  bar.apply.textContent = n ? `Shfaq ${n} armë` : 'Asnjë armë';
+  bar.apply.textContent = n ? `Shfaq ${n} ${n === 1 ? 'produkt' : 'produkte'}` : 'Asnjë produkt';
   const tags = [];
   if (state.q) tags.push(['q', `“${state.q}”`]);
   if (state.brand) tags.push(['brand', state.brand]);
@@ -112,7 +138,7 @@ bar.tags.addEventListener('click', (e) => {
 });
 bar.clear.addEventListener('click', () => { els.q.value = ''; state.q = ''; render(); els.q.focus(); });
 const mobile = matchMedia('(max-width: 1023px)');
-if (matchMedia('(max-width: 639px)').matches) els.q.placeholder = 'Kërko armën ose markën…';
+if (matchMedia('(max-width: 639px)').matches) els.q.placeholder = 'Kërko produktin…';
 function openPanel() {
   if (!mobile.matches) return;
   bar.panel.classList.add('is-open'); bar.scrim.hidden = false;
