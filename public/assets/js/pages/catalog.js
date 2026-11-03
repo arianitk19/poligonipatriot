@@ -1,5 +1,6 @@
 import { getProducts, getCategories } from '../data.js';
 import { productCard, esc } from '../ui.js';
+import { mediaUrl } from '../data.js';
 
 const $ = (s) => document.querySelector(s);
 const grid = $('[data-grid]');
@@ -12,6 +13,49 @@ const params = new URLSearchParams(location.search);
 const state = { cat: params.get('kategoria') || '', q: params.get('q') || '', brand: params.get('marka') || '', caliber: params.get('kalibri') || '', sort: params.get('renditja') || '' };
 let products = [];
 let categories = [];
+const FEAT = 'mirembajtje'; // kategoria e veçuar (Ballistol): del e para dhe me pamje të veçantë
+const featBox = $('[data-feat]');
+const DROP = '<svg class="chip-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-.4 0-.8.2-1 .6C9.3 6 5.5 11.2 5.5 15a6.5 6.5 0 0 0 13 0c0-3.8-3.8-9-5.5-11.9-.2-.4-.6-.6-1-.6Z" fill="currentColor"/></svg>';
+const FEAT_PICKS = ['ballistol-universalol-200ml', 'ballistol-guncer-keramik-waffenol-200ml', 'scherells-schaftol-dark-50ml', 'ballistol-set-waffenpflege'];
+
+function featTiles() {
+  const by = Object.fromEntries(products.map((p) => [p.slug, p]));
+  const picks = FEAT_PICKS.map((s) => by[s]).filter((p) => p?.images?.[0]);
+  return `<div class="feat-stage" aria-hidden="true">${picks.map((p, i) => `<span class="feat-tile t${i + 1}"><img src="${esc(mediaUrl(p.images[0]))}" alt="" loading="lazy" decoding="async"></span>`).join('')}</div>`;
+}
+
+function renderFeat() {
+  const n = products.filter((p) => p.category_slug === FEAT).length;
+  const filtered = state.q || state.brand || state.caliber;
+  if (!n || (state.cat && state.cat !== FEAT) || (!state.cat && filtered)) { featBox.hidden = true; featBox.innerHTML = ''; featBox.dataset.mode = ''; return; }
+  const mode = state.cat === FEAT ? 'intro' : 'promo';
+  if (featBox.dataset.mode === mode && !featBox.hidden) return;
+  featBox.dataset.mode = mode;
+  featBox.hidden = false;
+  featBox.innerHTML = mode === 'promo' ? `
+    <button type="button" class="feat feat-promo" data-cat="${FEAT}">
+      <span class="feat-copy">
+        <span class="feat-kicker"><i></i>E re në dyqan · Ballistol</span>
+        <span class="feat-title">Mirëmbajtja e armëve</span>
+        <span class="feat-text">Vajra, pastrues tyte, brunime dhe vajra për kondakun, nga marka gjermane Ballistol.</span>
+        <span class="feat-cta">Shiko ${n} produktet <svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
+      </span>
+      ${featTiles()}
+    </button>` : `
+    <section class="feat feat-intro" aria-labelledby="feat-h">
+      <div class="feat-copy">
+        <span class="feat-kicker"><i></i>Rreth markës</span>
+        <h2 class="feat-title" id="feat-h">Ballistol, që nga 1904</h2>
+        <p class="feat-text">Kompania familjare u themelua më 1874 në Këln të Gjermanisë. Më 1904 Dr. Helmut Klever krijoi vajin Ballistol për ushtrinë gjermane: një vaj i vetëm për pastrimin, mbrojtjen dhe ruajtjen e armës. Sot Ballistol prodhon gamë të plotë për kujdesin e armëve, nga vajrat GunCer dhe GunEx, te brunimet, pastruesit e tytës dhe vajrat Scherell's për drurin e kondakut.</p>
+        <dl class="feat-stats">
+          <div><dt>1874</dt><dd>Themelimi në Këln</dd></div>
+          <div><dt>1904</dt><dd>Formula e Ballistol-it</dd></div>
+          <div><dt>1905</dt><dd>Në përdorim në ushtrinë gjermane</dd></div>
+        </dl>
+      </div>
+      ${featTiles()}
+    </section>`;
+}
 
 const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i');
 
@@ -53,6 +97,7 @@ function render() {
   els.count.innerHTML = `<b>${list.length}</b> ${list.length === 1 ? 'produkt' : 'produkte'}`;
   renderChips(inCat);
   renderBar(list.length);
+  renderFeat();
   const filtered = state.q || state.brand || state.caliber || state.sort;
   document.querySelectorAll('[data-reset]').forEach((b) => b.classList.toggle('hidden', !filtered && b.closest('[data-empty]') === null));
 
@@ -66,10 +111,12 @@ function render() {
 
 Promise.all([getProducts(), getCategories()]).then(([p, c]) => {
   products = p;
-  categories = c;
+  categories = [...c].sort((a, b) => (b.slug === FEAT) - (a.slug === FEAT));
   const counts = Object.fromEntries(c.map((x) => [x.slug, p.filter((y) => y.category_slug === x.slug).length]));
   els.cats.innerHTML = `<button type="button" class="chip" data-cat="">Të gjitha <span class="count">${p.length}</span></button>` +
-    c.filter((x) => counts[x.slug] || x.slug === state.cat).map((x) => `<button type="button" class="chip" data-cat="${esc(x.slug)}">${esc(x.name)} <span class="count">${counts[x.slug] || 0}</span></button>`).join('');
+    categories.filter((x) => counts[x.slug] || x.slug === state.cat).map((x) => x.slug === FEAT
+      ? `<button type="button" class="chip chip-feat" data-cat="${esc(x.slug)}">${DROP}${esc(x.name)} <span class="count">${counts[x.slug] || 0}</span><b class="chip-new">E re</b></button>`
+      : `<button type="button" class="chip" data-cat="${esc(x.slug)}">${esc(x.name)} <span class="count">${counts[x.slug] || 0}</span></button>`).join('');
   els.q.value = state.q; els.sort.value = state.sort;
   render();
 }).catch((e) => {
@@ -103,12 +150,15 @@ document.addEventListener('click', (e) => {
   render();
 });
 
-els.cats.addEventListener('click', (e) => {
+function pickCat(e) {
   const b = e.target.closest('[data-cat]');
   if (!b) return;
   state.cat = b.dataset.cat; state.brand = ''; state.caliber = '';
   render();
-});
+  if (b.closest('[data-feat]')) featBox.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+}
+els.cats.addEventListener('click', pickCat);
+featBox.addEventListener('click', pickCat);
 /* ───── Shiriti i kërkimit dhe filtrat ───── */
 const bar = {
   clear: $('[data-clear]'), badge: $('[data-badge]'), tags: $('[data-tags]'), panel: $('[data-panel]'),

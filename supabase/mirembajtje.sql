@@ -1,7 +1,7 @@
 -- POLIGONI PATRIOT — Kategoria "Mirëmbajtja e armëve" + 29 produkte Ballistol
 -- Ngjite gjithë këtë skedar te Supabase → SQL Editor → Run. Mund të ekzekutohet disa herë.
 begin;
-insert into public.categories (slug, name, description, image, sort) values ('mirembajtje', 'Mirëmbajtja e armëve', 'Vajra, pastrues, brunime dhe aksesorë Ballistol për kujdesin e armës.', '/assets/img/products/ballistol-set-waffenpflege.webp', 45)
+insert into public.categories (slug, name, description, image, sort) values ('mirembajtje', 'Mirëmbajtja e armëve', 'Vajra, pastrues, brunime dhe aksesorë Ballistol për kujdesin e armës.', '/assets/img/products/ballistol-set-waffenpflege.webp', 5)
   on conflict (slug) do update set name = excluded.name, description = excluded.description, image = excluded.image, sort = excluded.sort;
 insert into public.products (slug, name, brand, category_slug, origin, caliber, capacity, barrel_length, weight, action, description, price, show_price, images, in_stock, featured, published, sort, legacy_slug) values ('ballistol-aluminium-primer-50ml', 'Ballistol Aluminium-Primer 50 ml', 'Ballistol', 'mirembajtje', 'Gjermani', null, null, null, '50 ml', null, 'Bazë për përgatitjen e sipërfaqeve prej alumini para brunimit. Siguron që ngjyra të kapet njëtrajtësisht.', null, true, array['/assets/img/products/ballistol-aluminium-primer-50ml.webp']::text[], true, false, true, 600, null)
   on conflict (slug) do update set name = excluded.name, brand = excluded.brand, category_slug = excluded.category_slug, origin = excluded.origin, caliber = excluded.caliber, capacity = excluded.capacity, barrel_length = excluded.barrel_length, weight = excluded.weight, action = excluded.action, description = excluded.description, price = excluded.price, show_price = excluded.show_price, images = excluded.images, in_stock = excluded.in_stock, featured = excluded.featured, published = excluded.published, sort = excluded.sort, legacy_slug = excluded.legacy_slug;
@@ -66,3 +66,10 @@ commit;
 -- Emrat e saktë sipas ballistol.de (nëse produktet janë futur më herët me emrat e vjetër)
 update public.products set name = 'Ballistol JW-Laufreiniger Patch-Rolle' where slug = 'ballistol-laufreiniger-patch-rolle-100';
 update public.products set name = 'Ballistol JW-Waffenpflegetücher' where slug = 'ballistol-waffen-pflegetucher-60';
+
+-- Kategoria e para në dyqan + foto/përshkrime shtesë
+update public.categories set sort = 5 where slug = 'mirembajtje';
+update public.products set description = 'Rrotull me 100 pecka (patches) për pastrimin e tytës. Pecka grisen nga rrotulla, vendosen në shufrën e pastrimit me adapterin JW dhe kalohen nëpër tytë.
+
+Për të gjitha kalibrat. Thithëse, nuk lënë push, nuk grisen lehtë dhe janë rezistente ndaj vajit dhe tretësve. Për një pastrim nevojiten nga ½ deri në 6 pecka, sipas kalibrit.', images = array['/assets/img/products/ballistol-laufreiniger-patch-rolle-100.webp', '/assets/img/products/ballistol-laufreiniger-patch-rolle-100-2.webp', '/assets/img/products/ballistol-laufreiniger-patch-rolle-100-3.webp']::text[] where slug = 'ballistol-laufreiniger-patch-rolle-100';
+update public.products set images = array['/assets/img/products/ballistol-waffen-pflegetucher-60.webp', '/assets/img/products/ballistol-waffen-pflegetucher-60-2.webp']::text[] where slug = 'ballistol-waffen-pflegetucher-60';

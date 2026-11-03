@@ -41,7 +41,7 @@ function render(p, cat, settings) {
     <div class="lg:col-span-5 content-start grid gap-6">
       <div>
         <p class="text-steel-400">${esc(p.brand || '')}</p>
-        <h1 class="t-h1 mt-2">${esc(p.name)}</h1>
+        <h1 class="t-h1 mt-2 pd-title${Math.max(...p.name.split(/\s+/).map((w) => w.length)) > 11 ? ' is-long' : ''}">${esc(p.name)}</h1>
         <p class="mt-5 flex flex-wrap items-center gap-3">
           <span class="t-spec text-2xl font-semibold">${esc(priceLabel(p))}</span>
           <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${p.in_stock === false ? 'bg-steel-800 text-steel-300' : 'bg-white/10 text-bone'}">${p.in_stock === false ? 'Pa stok momentalisht' : 'Në dispozicion'}</span>

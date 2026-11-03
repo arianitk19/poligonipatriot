@@ -1,5 +1,12 @@
 [
   {
+    "slug": "mirembajtje",
+    "name": "Mirëmbajtja e armëve",
+    "description": "Vajra, pastrues, brunime dhe aksesorë Ballistol për kujdesin e armës.",
+    "image": "/assets/img/products/ballistol-set-waffenpflege.webp",
+    "sort": 5
+  },
+  {
     "slug": "arme-te-shkurta",
     "name": "Armë të shkurtra",
     "description": "Pistoleta dhe revolverë të kalibrave të ndryshëm.",
@@ -26,13 +33,6 @@
     "description": "Për armë të shkurtra, të gjata, rimfire dhe shotgunë.",
     "image": "/assets/img/site/municione.webp",
     "sort": 40
-  },
-  {
-    "slug": "mirembajtje",
-    "name": "Mirëmbajtja e armëve",
-    "description": "Vajra, pastrues, brunime dhe aksesorë Ballistol për kujdesin e armës.",
-    "image": "/assets/img/products/ballistol-set-waffenpflege.webp",
-    "sort": 45
   },
   {
     "slug": "optika",

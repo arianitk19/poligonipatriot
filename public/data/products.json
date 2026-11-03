@@ -1528,11 +1528,13 @@
     "barrel_length": null,
     "weight": "100 copë",
     "action": null,
-    "description": "Rrotull me pecka për pastrimin e tytës.",
+    "description": "Rrotull me 100 pecka (patches) për pastrimin e tytës. Pecka grisen nga rrotulla, vendosen në shufrën e pastrimit me adapterin JW dhe kalohen nëpër tytë.\n\nPër të gjitha kalibrat. Thithëse, nuk lënë push, nuk grisen lehtë dhe janë rezistente ndaj vajit dhe tretësve. Për një pastrim nevojiten nga ½ deri në 6 pecka, sipas kalibrit.",
     "price": null,
     "show_price": true,
     "images": [
-      "/assets/img/products/ballistol-laufreiniger-patch-rolle-100.webp"
+      "/assets/img/products/ballistol-laufreiniger-patch-rolle-100.webp",
+      "/assets/img/products/ballistol-laufreiniger-patch-rolle-100-2.webp",
+      "/assets/img/products/ballistol-laufreiniger-patch-rolle-100-3.webp"
     ],
     "in_stock": true,
     "featured": false,
@@ -1670,7 +1672,8 @@
     "price": null,
     "show_price": true,
     "images": [
-      "/assets/img/products/ballistol-waffen-pflegetucher-60.webp"
+      "/assets/img/products/ballistol-waffen-pflegetucher-60.webp",
+      "/assets/img/products/ballistol-waffen-pflegetucher-60-2.webp"
     ],
     "in_stock": true,
     "featured": false,

@@ -1510,3 +1510,79 @@ html.is-scrolling .range-svg *, html.is-scrolling .cert-svg *, html.is-scrolling
     .sb-field[hidden] { display: none; }
   }
 }
+
+/* ───── Dyqani: kategoria e veçuar (Ballistol) ───── */
+@layer components {
+  .chip-feat { position: relative; overflow: hidden; border-color: rgb(227 52 59 / 0.55); color: var(--color-bone); background: linear-gradient(135deg, rgb(227 52 59 / 0.2), rgb(227 52 59 / 0.06)); box-shadow: 0 0 0 0 rgb(227 52 59 / 0.4); animation: chipPulse 2.8s var(--ease-out-expo) infinite; }
+  .chip-feat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.22) 50%, transparent 65%); transform: translateX(-120%); animation: chipShine 4.5s ease-in-out infinite 1s; pointer-events: none; }
+  .chip-feat:hover { border-color: var(--color-patriot); color: #fff; }
+  .chip-feat[aria-pressed="true"] { background: var(--color-patriot); border-color: var(--color-patriot); color: #fff; animation: none; }
+  .chip-feat .chip-drop { width: 0.85rem; height: 0.85rem; color: var(--color-patriot); flex: none; }
+  .chip-feat[aria-pressed="true"] .chip-drop { color: #fff; }
+  .chip-new { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.18rem 0.45rem; border-radius: 999px; background: var(--color-patriot); color: #fff; line-height: 1; }
+  .chip-feat[aria-pressed="true"] .chip-new { background: #fff; color: var(--color-patriot-600); }
+  @keyframes chipPulse { 0% { box-shadow: 0 0 0 0 rgb(227 52 59 / 0.45); } 70%, 100% { box-shadow: 0 0 0 10px rgb(227 52 59 / 0); } }
+  @keyframes chipShine { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+
+  .feat-box { margin-top: 1.5rem; scroll-margin-top: 6.5rem; }
+  .feat { position: relative; display: grid; width: 100%; text-align: left; overflow: hidden; isolation: isolate; border-radius: 1.25rem; border: 1px solid rgb(227 52 59 / 0.28);
+    background: radial-gradient(80% 140% at 100% 0%, rgb(227 52 59 / 0.28), transparent 60%), radial-gradient(60% 120% at 0% 100%, rgb(227 52 59 / 0.1), transparent 60%), #111113;
+    animation: featIn 0.8s var(--ease-out-expo) both; }
+  .feat::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(90deg, transparent, #000 70%); }
+  .feat-copy { display: grid; align-content: center; gap: 0.75rem; padding: 1.5rem; position: relative; z-index: 1; }
+  .feat-kicker { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ff8a8f; }
+  .feat-kicker i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-patriot); box-shadow: 0 0 0 0 rgb(227 52 59 / 0.6); animation: chipPulse 1.8s ease-out infinite; }
+  .feat-title { font-weight: 900; font-stretch: 125%; font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.6rem); line-height: 1.02; letter-spacing: -0.01em; color: var(--color-bone); text-transform: uppercase; }
+  .feat-text { color: var(--color-steel-300); max-width: 56ch; line-height: 1.55; }
+  .feat-cta { justify-self: start; margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.6rem; min-height: 2.75rem; padding: 0 1.2rem; border-radius: 999px; background: var(--color-patriot); color: #fff; font-weight: 700; transition: background-color 0.2s, gap 0.3s var(--ease-out-expo); }
+  .feat-cta svg { width: 1rem; height: 1rem; }
+  .feat-promo { cursor: pointer; transition: border-color 0.3s, transform 0.5s var(--ease-out-expo); }
+  .feat-promo:hover { border-color: rgb(227 52 59 / 0.6); }
+  .feat-promo:hover .feat-cta { background: var(--color-patriot-600); gap: 0.9rem; }
+  .feat-promo:focus-visible { outline: 2px solid var(--color-patriot); outline-offset: 3px; }
+
+  .feat-stage { position: relative; min-height: 11rem; }
+  .feat-tile { position: absolute; display: block; overflow: hidden; border-radius: 0.9rem; background: #fff; box-shadow: 0 24px 40px -18px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(255 255 255 / 0.08); transition: transform 0.6s var(--ease-out-expo); }
+  .feat-tile img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; transform: scale(1.08); }
+  .feat-tile.t4 img { object-fit: contain; transform: none; padding: 4%; }
+  .feat-tile.t1 { width: 34%; aspect-ratio: 3 / 4; left: 4%; top: 12%; transform: rotate(-7deg); animation: featFloat 6s ease-in-out infinite; }
+  .feat-tile.t2 { width: 34%; aspect-ratio: 3 / 4; left: 33%; top: 2%; transform: rotate(3deg); z-index: 2; animation: featFloat 6s ease-in-out infinite -2s; }
+  .feat-tile.t3 { width: 30%; aspect-ratio: 3 / 4; left: 63%; top: 16%; transform: rotate(8deg); animation: featFloat 6s ease-in-out infinite -4s; }
+  .feat-tile.t4 { display: none; }
+  .feat:hover .feat-tile.t1 { transform: rotate(-10deg) translate(-6px, -4px); }
+  .feat:hover .feat-tile.t3 { transform: rotate(11deg) translate(6px, -4px); }
+  @keyframes featFloat { 50% { translate: 0 -6px; } }
+  @keyframes featIn { from { opacity: 0; transform: translateY(12px); } }
+
+  .feat-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / 0.08); }
+  .feat-stats dt { font-weight: 900; font-stretch: 115%; font-size: 1.5rem; line-height: 1; color: var(--color-patriot); font-variant-numeric: tabular-nums; }
+  .feat-stats dd { margin-top: 0.35rem; font-size: 0.8rem; line-height: 1.35; color: var(--color-steel-400); }
+
+  @media (max-width: 639px) {
+    .feat { grid-template-rows: auto auto; }
+    .feat-stage { order: -1; min-height: 9.5rem; margin: 1rem 1rem -0.5rem; }
+    .feat-copy { padding: 1.25rem; }
+    .feat-intro .feat-text { font-size: 0.95rem; }
+  }
+  @media (min-width: 640px) {
+    .feat { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+    .feat-copy { padding: 2rem 2.25rem; }
+    .feat-stage { min-height: 15rem; margin-right: 1rem; }
+  }
+  @media (min-width: 1024px) {
+    .feat-copy { padding: 2.5rem 3rem; }
+    .feat-stage { min-height: 18rem; }
+    .feat-tile.t1 { width: 27%; left: 2%; top: 20%; }
+    .feat-tile.t2 { width: 28%; left: 25%; top: 8%; }
+    .feat-tile.t3 { width: 27%; left: 49%; top: 22%; }
+    .feat-tile.t4 { display: block; width: 25%; aspect-ratio: 3 / 4; left: 72%; top: 10%; transform: rotate(-4deg); animation: featFloat 6s ease-in-out infinite -3s; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chip-feat, .chip-feat::after, .feat, .feat-tile, .feat-kicker i { animation: none !important; }
+  }
+}
+
+@layer components {
+  .pd-title { overflow-wrap: anywhere; hyphens: auto; }
+  .pd-title.is-long { font-size: clamp(1.9rem, 1.2rem + 2.4vw, 3.1rem); line-height: 0.98; }
+}
