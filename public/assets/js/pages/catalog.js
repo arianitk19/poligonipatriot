@@ -123,6 +123,7 @@ function renderChips(inCat) {
   const count = (key) => inCat.reduce((m, p) => (p[key] ? ((m[p[key]] = (m[p[key]] || 0) + 1), m) : m), {});
   const brands = count('brand'), cals = count('caliber');
   chipBox('cat').innerHTML = chipsHtml('cat', [['', 'Të gjitha', products.length], ...categories.filter((c) => products.some((p) => p.category_slug === c.slug)).map((c) => [c.slug, c.name, products.filter((p) => p.category_slug === c.slug).length])], state.cat);
+  chipBox('cat').querySelector(`[data-v="${FEAT}"]`)?.classList.add('sb-chip-feat');
   chipBox('brand').innerHTML = chipsHtml('brand', [['', 'Të gjitha', null], ...Object.keys(brands).sort((a, b) => a.localeCompare(b)).map((b) => [b, b, brands[b]])], state.brand);
   const calKeys = Object.keys(cals).sort();
   chipBox('caliber').innerHTML = chipsHtml('caliber', [['', 'Të gjithë', null], ...calKeys.map((c) => [c, c, cals[c]])], state.caliber);

@@ -1282,8 +1282,8 @@ html.lenis, html.lenis body { height: auto; }
 @layer components {
   .shop-bar { position: sticky; top: 4.5rem; z-index: 30; margin: 1.25rem -1rem 0; padding: 0.75rem 1rem; background: #0a0a0b; border-bottom: 1px solid transparent; transition: transform 0.5s var(--ease-out-expo), border-color 0.3s; }
   @media (min-width: 1024px) { .shop-bar { top: 5rem; margin-inline: 0; padding-inline: 0; } }
-  html.header-hidden .shop-bar { transform: translateY(-4.5rem); }
-  @media (min-width: 1024px) { html.header-hidden .shop-bar { transform: translateY(-5rem); } }
+  html.header-hidden .shop-bar.is-stuck { transform: translateY(-4.5rem); }
+  @media (min-width: 1024px) { html.header-hidden .shop-bar.is-stuck { transform: translateY(-5rem); } }
   .shop-bar.is-stuck { border-bottom-color: var(--color-steel-800); }
   .sb-row { display: flex; align-items: center; gap: 0.6rem; }
 
@@ -1476,14 +1476,14 @@ html.is-scrolling .range-svg *, html.is-scrolling .cert-svg *, html.is-scrolling
 
 /* ───────── Dyqani: kategoritë dhe filtrat në telefon ───────── */
 @layer components {
-  .cat-row { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; margin: 0 -1rem; padding: 0 1rem 0.25rem; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
-  .cat-row::-webkit-scrollbar { display: none; }
-  .cat-row .chip { flex: none; scroll-snap-align: start; white-space: nowrap; }
+  /* Kategoritë: të gjitha të dukshme menjëherë (pa rrëshqitje anash) */
+  .cat-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .cat-row .chip { white-space: nowrap; }
   @media (max-width: 1023px) {
-    .cat-row { -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
-    .cat-row .chip { min-height: 2.35rem; padding: 0 0.9rem; font-size: 0.9rem; }
+    .cat-row { gap: 0.45rem; }
+    .cat-row .chip { flex: 1 1 auto; justify-content: center; min-height: 2.6rem; padding: 0 0.85rem; font-size: 0.9rem; }
   }
-  @media (min-width: 1024px) { .cat-row { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; } }
+  @media (max-width: 359px) { .cat-row .chip { font-size: 0.84rem; padding: 0 0.7rem; } }
 
   .sb-chips { display: none; }
   .sb-chip { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.6rem; padding: 0 1rem; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.12); background: #18181b; color: var(--color-steel-300); font-size: 0.92rem; font-weight: 600; transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.15s; -webkit-tap-highlight-color: transparent; }
@@ -1513,14 +1513,17 @@ html.is-scrolling .range-svg *, html.is-scrolling .cert-svg *, html.is-scrolling
 
 /* ───── Dyqani: kategoria e veçuar (Ballistol) ───── */
 @layer components {
-  .chip-feat { position: relative; overflow: hidden; border-color: rgb(227 52 59 / 0.55); color: var(--color-bone); background: linear-gradient(135deg, rgb(227 52 59 / 0.2), rgb(227 52 59 / 0.06)); }
-  .chip-feat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.22) 50%, transparent 65%); transform: translateX(-120%); animation: chipShine 4.5s ease-in-out infinite 1s; pointer-events: none; }
-  .chip-feat:hover { border-color: var(--color-patriot); color: #fff; }
-  .chip-feat[aria-pressed="true"] { background: var(--color-patriot); border-color: var(--color-patriot); color: #fff; animation: none; }
-  .chip-feat .chip-drop { width: 0.85rem; height: 0.85rem; color: var(--color-patriot); flex: none; }
-  .chip-feat[aria-pressed="true"] .chip-drop { color: #fff; }
-  .chip-new { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.18rem 0.45rem; border-radius: 999px; background: var(--color-patriot); color: #fff; line-height: 1; }
-  .chip-feat[aria-pressed="true"] .chip-new { background: #fff; color: var(--color-patriot-600); }
+  /* Butoni Ballistol: i kuq i ngrohtë që bie në sy */
+  .chip-feat { position: relative; overflow: hidden; border: 0; color: #fff; background: linear-gradient(135deg, #e3343b 0%, #f2543a 55%, #ff7a45 100%); box-shadow: 0 8px 22px -10px rgb(242 84 58 / 0.85), inset 0 1px 0 rgb(255 255 255 / 0.22); transition: box-shadow 0.25s, transform 0.25s var(--ease-out-expo), filter 0.25s; }
+  .chip-feat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.28) 50%, transparent 65%); transform: translateX(-120%); animation: chipShine 5s ease-in-out infinite 1.2s; pointer-events: none; }
+  .chip-feat:hover { color: #fff; filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 12px 26px -10px rgb(242 84 58 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.25); }
+  .chip-feat[aria-pressed="true"] { color: #fff; background: linear-gradient(135deg, #e3343b 0%, #f2543a 55%, #ff7a45 100%); box-shadow: 0 0 0 2px #0a0a0b, 0 0 0 3.5px #ff7a52, 0 10px 24px -10px rgb(242 84 58 / 0.9); }
+  .chip-feat .count { opacity: 0.85; }
+  .chip-feat .chip-drop { width: 0.85rem; height: 0.85rem; color: #fff; flex: none; }
+  .chip-new { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.2rem 0.42rem; border-radius: 999px; background: #fff; color: #d92f2f; line-height: 1; }
+  .sb-chip.sb-chip-feat { border-color: transparent; color: #fff; background: linear-gradient(135deg, #e3343b 0%, #f2543a 55%, #ff7a45 100%); }
+  .sb-chip.sb-chip-feat[aria-pressed="true"] { box-shadow: 0 0 0 2px #111113, 0 0 0 3.5px #ff7a52; }
+  .sb-chip.sb-chip-feat span { opacity: 0.85; }
   @keyframes chipPulse { 0% { box-shadow: 0 0 0 0 rgb(227 52 59 / 0.45); } 70%, 100% { box-shadow: 0 0 0 10px rgb(227 52 59 / 0); } }
   @keyframes chipShine { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
 
