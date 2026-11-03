@@ -1,10 +1,8 @@
--- Gjeneruar automatikisht nga scripts/seed.mjs më 2026-11-03T10:42:08.941Z
+-- Gjeneruar automatikisht nga scripts/seed.mjs më 2026-11-03T10:59:37.742Z
 -- Mund të ekzekutohet disa herë: rreshtat ekzistues përditësohen.
 begin;
 
 -- Kategoritë
-insert into public.categories (slug, name, description, image, sort) values ('mirembajtje', 'Mirëmbajtja e armëve', 'Vajra, pastrues, brunime dhe aksesorë Ballistol për kujdesin e armës.', '/assets/img/products/ballistol-set-waffenpflege.webp', 5)
-  on conflict (slug) do update set name = excluded.name, description = excluded.description, image = excluded.image, sort = excluded.sort;
 insert into public.categories (slug, name, description, image, sort) values ('arme-te-shkurta', 'Armë të shkurtra', 'Pistoleta dhe revolverë të kalibrave të ndryshëm.', '/assets/img/gallery/thumbs/g113.webp', 10)
   on conflict (slug) do update set name = excluded.name, description = excluded.description, image = excluded.image, sort = excluded.sort;
 insert into public.categories (slug, name, description, image, sort) values ('arme-te-gjata', 'Armë të gjata', 'Pushkë gjahu dhe sportive, gjysmë-automatike dhe me shul.', '/assets/img/site/cat-pushka.webp', 20)
@@ -12,6 +10,8 @@ insert into public.categories (slug, name, description, image, sort) values ('ar
 insert into public.categories (slug, name, description, image, sort) values ('shotgune', 'Shotgunë', 'Modele gjysmë-automatike dhe me pompë për gjueti dhe sport.', '/assets/img/site/cat-shotgun.webp', 30)
   on conflict (slug) do update set name = excluded.name, description = excluded.description, image = excluded.image, sort = excluded.sort;
 insert into public.categories (slug, name, description, image, sort) values ('municione', 'Municione', 'Për armë të shkurtra, të gjata, rimfire dhe shotgunë.', '/assets/img/site/municione.webp', 40)
+  on conflict (slug) do update set name = excluded.name, description = excluded.description, image = excluded.image, sort = excluded.sort;
+insert into public.categories (slug, name, description, image, sort) values ('mirembajtje', 'Mirëmbajtja e armëve', 'Vajra, pastrues, brunime dhe aksesorë Ballistol për kujdesin e armës.', '/assets/img/products/ballistol-set-waffenpflege.webp', 45)
   on conflict (slug) do update set name = excluded.name, description = excluded.description, image = excluded.image, sort = excluded.sort;
 insert into public.categories (slug, name, description, image, sort) values ('optika', 'Optika', 'Dylbi, red dot, reflex dhe matës distancash.', '/assets/img/site/cat-optika.webp', 50)
   on conflict (slug) do update set name = excluded.name, description = excluded.description, image = excluded.image, sort = excluded.sort;
