@@ -156,7 +156,12 @@ export async function submitApplication(payload, files = {}) {
   }
   const row = { id, ...payload, id_front_path: paths.front || null, id_back_path: paths.back || null };
   if (paths.nenshkrimi) row.signature_path = paths.nenshkrimi;
-  const { error } = await sb.from('applications').insert(row);
+  let { error } = await sb.from('applications').insert(row);
+  // Nëse baza ende nuk i ka fushat e dokumentit (SQL-ja e re pa u ekzekutuar), kërkesa ruhet pa to
+  if (error && /doc_(jpg|pdf)/.test(`${error.message} ${error.details || ''} ${error.hint || ''}`)) {
+    const { doc_jpg, doc_pdf, ...rest } = row;
+    ({ error } = await sb.from('applications').insert(rest));
+  }
   if (error) throw error;
   return { ok: true, id };
 }

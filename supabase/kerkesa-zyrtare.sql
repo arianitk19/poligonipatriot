@@ -81,6 +81,7 @@ begin
       site text := coalesce(public.notify_secret('site_url'), 'https://poligonipatriot.com');
       tel text := regexp_replace(new.phone, '[^0-9+]', '', 'g');
     begin
+      if new.kind = 'kerkese' then return new; end if; -- kërkesa dërgohet nga kerkesa-dergimi.sql
       perform public.send_notification(
         'Aplikim i ri: ' || new.full_name || ' (' || program_label || ')',
         public.mail_layout(

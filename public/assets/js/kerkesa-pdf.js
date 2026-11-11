@@ -132,6 +132,26 @@ export async function makeKerkesaPdf(d, sigSrc, { hideId = false } = {}) {
   return new File([pdf], pdfName(d, hideId ? '' : '-kopja'), { type: 'application/pdf' });
 }
 
+/** Fleta si foto (JPG) dhe si PDF, nga i njëjti vizatim. */
+export async function makeKerkesaFiles(d, sigSrc, { hideId = false, quality = 0.88 } = {}) {
+  const cv = await drawSheet(d, sigSrc, { hideId });
+  const blob = await new Promise((r) => cv.toBlob(r, 'image/jpeg', quality));
+  const jpgBytes = new Uint8Array(await blob.arrayBuffer());
+  const base = pdfName(d).replace(/\.pdf$/, '');
+  return {
+    jpg: new File([blob], `${base}.jpg`, { type: 'image/jpeg' }),
+    pdf: new File([jpegToPdf(jpgBytes, cv.width, cv.height)], `${base}.pdf`, { type: 'application/pdf' }),
+  };
+}
+
+/** Skedari si tekst base64 (pa prefiksin data:). */
+export const toBase64 = (file) => new Promise((res, rej) => {
+  const fr = new FileReader();
+  fr.onload = () => res(String(fr.result).split(',')[1] || '');
+  fr.onerror = () => rej(fr.error);
+  fr.readAsDataURL(file);
+});
+
 export function downloadFile(file) {
   const url = URL.createObjectURL(file);
   const a = Object.assign(document.createElement('a'), { href: url, download: file.name });

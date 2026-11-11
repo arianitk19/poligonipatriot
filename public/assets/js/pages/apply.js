@@ -1,35 +1,13 @@
-import { submitApplication, getSettings } from '../data.js';
-import { CONFIG } from '../config.js';
-import { fieldError, isEmail, isPhone, looksLikeBot, compressImage, showDone, friendlyError } from '../forms.js';
+import { submitApplication } from '../data.js';
+import { fieldError, isPhone, looksLikeBot, showDone, friendlyError } from '../forms.js';
 import { toast } from '../app.js';
 import { createSignaturePad, typedSignatureFile, loadSigFonts, SIG_FONTS } from '../signature.js';
-import { dmy, WEAPON_CLASSES } from '../kerkesa-doc.js';
-import { makeKerkesaPdf, downloadFile } from '../kerkesa-pdf.js';
+import { dmy } from '../kerkesa-doc.js';
+import { makeKerkesaFiles, toBase64, downloadFile } from '../kerkesa-pdf.js';
 
 const started = Date.now();
 const params = new URLSearchParams(location.search);
 const pre = params.get('programi');
-
-/* ───────────────────────── Zgjedhja e mënyrës (skeda) ───────────────────────── */
-const tabs = [...document.querySelectorAll('.apply-modes [role="tab"]')];
-function setMode(mode, focus = false) {
-  tabs.forEach((t) => {
-    const on = t.dataset.mode === mode;
-    t.setAttribute('aria-selected', String(on));
-    t.tabIndex = on ? 0 : -1;
-    if (on && focus) t.focus();
-  });
-  document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== mode; });
-  if (mode === 'kerkese') pad?.refit();
-}
-tabs.forEach((t, i) => {
-  t.addEventListener('click', () => setMode(t.dataset.mode));
-  t.addEventListener('keydown', (e) => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    e.preventDefault();
-    setMode(tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length].dataset.mode, true);
-  });
-});
 
 /* ───────────────────────── 1. Kërkesa zyrtare me nënshkrim ───────────────────────── */
 const kForm = document.querySelector('[data-kerkese-form]');
@@ -186,40 +164,21 @@ function validateKerkese() {
   };
 }
 
-let lastCopy = null;
-let waNumber = CONFIG.site.whatsapp || '38349394850';
-getSettings().then((st) => { if (st?.whatsapp) waNumber = String(st.whatsapp).replace(/\D/g, ''); }).catch(() => {});
+// Kopja e aplikantit: foto (ruhet automatikisht) dhe PDF
+let files = null;
 const coarse = matchMedia('(hover: none)').matches;
-
-// Mesazhi për WhatsApp: pa numrin e letërnjoftimit dhe pa nënshkrimin
-function waText(d, id) {
-  const lines = [
-    'Përshëndetje Poligoni Patriot! Sapo nënshkrova dhe dërgova kërkesën zyrtare për trajnim profesional për armë.',
-    '',
-    `Emri: ${d.first_name} ${d.father_name} ${d.last_name}`,
-    `Trajnimi: ${d.weapon_classes.map((k) => `${k}. ${WEAPON_CLASSES[k]}`).join(', ')}`,
-    `Tel: ${d.phone}`,
-  ];
-  if (id) lines.push(`Nr. i kërkesës: ${String(id).slice(0, 8).toUpperCase()}`);
-  return lines.join('\n');
-}
-const waLink = (d, id, extra = '') => `https://wa.me/${waNumber}?text=${encodeURIComponent(waText(d, id) + extra)}`;
-
-// PDF-ja për WhatsApp (numri i letërnjoftimit i fshehur) dhe kopja e plotë e aplikantit
-let pdfWa = null, pdfFull = null;
 const canShareFiles = (f) => { try { return Boolean(navigator.canShare?.({ files: [f] })); } catch { return false; } };
-async function sendPdf(auto = false, waWin = null) {
-  if (!pdfWa) return;
-  const d = lastCopy.data;
-  if (canShareFiles(pdfWa)) {
-    try { await navigator.share({ files: [pdfWa], text: waText(d, d.id), title: 'Kërkesa për trajnim' }); return; }
-    catch (ex) { if (ex?.name === 'AbortError' || auto) return; }
+async function savePhoto() {
+  if (!files) return;
+  // Në telefon hapet menyja e ndarjes, ku "Ruaj foton" e vendos te Fotot
+  if (coarse && canShareFiles(files.jpg)) {
+    try { await navigator.share({ files: [files.jpg], title: 'Kërkesa për trajnim' }); return; }
+    catch (ex) { if (ex?.name === 'AbortError') return; }
   }
-  // Pa ndarje skedarësh (kompjuter): PDF-ja shkarkohet dhe hapet WhatsApp me mesazhin gati
-  downloadFile(pdfWa);
-  const url = waLink(d, d.id, '\n\nPo e bashkëngjis PDF-në e kërkesës.');
-  if (waWin && !waWin.closed) waWin.location.href = url; else window.open(url, '_blank', 'noopener');
+  downloadFile(files.jpg);
 }
+const MAX_DOCS = 4.5 * 1024 * 1024; // kufiri i bashkëngjitjeve në email (base64)
+
 kForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = kForm.querySelector('[data-form-error]');
@@ -232,108 +191,34 @@ kForm.addEventListener('submit', async (e) => {
   if (looksLikeBot(kForm, started)) { showDone(kForm); return; }
   const btn = kForm.querySelector('button[type="submit"]');
   const progress = kForm.querySelector('[data-progress]');
-  btn.setAttribute('aria-busy', 'true');
-  // Në kompjuter skeda e WhatsApp hapet tani (brenda klikimit), që shfletuesi të mos e bllokojë
-  let waWin = null;
-  if (!coarse && !navigator.canShare) { try { waWin = window.open('', '_blank'); if (waWin) { waWin.opener = null; waWin.document.write('<title>WhatsApp</title><body style="background:#0a0a0b;color:#b6b6bb;font:16px system-ui;display:grid;place-items:center;height:100vh;margin:0">Duke hapur WhatsApp…</body>'); } } catch { waWin = null; } }
+  btn.setAttribute('aria-busy', 'true'); btn.disabled = true;
   try {
     progress.textContent = 'Duke përgatitur nënshkrimin…';
     const sig = sigMode === 'type' ? await typedSignatureFile(typedInput.value.trim().replace(/\s+/g, ' '), sigFont) : await pad.toFile('nenshkrimi.png');
-    progress.textContent = 'Duke dërguar kërkesën…';
-    const r = await submitApplication(data, { nenshkrimi: sig });
+    const sigUrl = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(sig); });
+
+    // Fleta e plotësuar krijohet para dërgimit, që poligoni ta marrë menjëherë në email dhe WhatsApp
+    progress.textContent = 'Duke krijuar kërkesën (foto dhe PDF)…';
+    files = await makeKerkesaFiles(data, sigUrl);
+    let [jpg64, pdf64] = await Promise.all([toBase64(files.jpg), toBase64(files.pdf)]);
+    if (jpg64.length + pdf64.length > MAX_DOCS) {
+      files = await makeKerkesaFiles(data, sigUrl, { quality: 0.72 });
+      [jpg64, pdf64] = await Promise.all([toBase64(files.jpg), toBase64(files.pdf)]);
+    }
+
+    progress.textContent = 'Duke dërguar kërkesën te poligoni…';
+    const r = await submitApplication({ ...data, doc_jpg: jpg64, doc_pdf: pdf64 }, { nenshkrimi: sig });
     if (r.offline) toast('Mënyra demo: lidhni Supabase te config.js që kërkesat të ruhen.');
-    const sigUrl = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(sig); });
-    lastCopy = { data: { ...data, id: r.id }, sigUrl };
-    progress.textContent = 'Duke krijuar PDF-në…';
-    [pdfWa, pdfFull] = await Promise.all([makeKerkesaPdf(lastCopy.data, sigUrl, { hideId: true }), makeKerkesaPdf(lastCopy.data, sigUrl)]);
+
     showDone(kForm);
-    // Pas konfirmimit, PDF-ja dërgohet menjëherë në WhatsApp te numri i poligonit
-    if (canShareFiles(pdfWa)) await sendPdf(true);
-    else await sendPdf(true, waWin);
-  } catch (ex) {
-    console.error(ex);
-    waWin?.close();
-    err.textContent = friendlyError(ex); err.hidden = false;
-  } finally {
-    btn.removeAttribute('aria-busy'); progress.textContent = '';
-  }
-});
-document.querySelector('[data-print-copy]').addEventListener('click', () => { if (pdfFull) downloadFile(pdfFull); });
-document.querySelector('[data-send-pdf]').addEventListener('click', () => sendPdf(false));
-
-/* ───────────────────────── 2. Aplikimi i shpejtë (me foto të letërnjoftimit) ───────────────────────── */
-const form = document.querySelector('[data-apply-form]');
-const progress = form.querySelector('[data-progress]');
-const MAX = 5 * 1024 * 1024;
-const OK_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
-
-if (pre) { const r = form.querySelector(`input[name="program"][value="${CSS.escape(pre)}"]`); if (r) r.checked = true; }
-
-form.querySelectorAll('[data-drop]').forEach((drop) => {
-  const input = drop.querySelector('input[type="file"]');
-  const label = drop.querySelector('[data-file-name]');
-  const set = () => {
-    const f = input.files[0];
-    drop.classList.toggle('has-file', Boolean(f));
-    label.textContent = f ? `${f.name} · ${(f.size / 1024 / 1024).toFixed(1)} MB` : 'Zgjidhni ose tërhiqni skedarin';
-    drop.removeAttribute('aria-invalid');
-  };
-  input.addEventListener('change', set);
-  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('is-over'); }));
-  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('is-over')));
-  drop.addEventListener('drop', (e) => { e.preventDefault(); if (e.dataTransfer.files[0]) { input.files = e.dataTransfer.files; set(); } });
-});
-
-function checkFile(name) {
-  const f = form.elements[name].files[0];
-  if (!f) return 'Ngarkoni të dyja anët e letërnjoftimit.';
-  if (!OK_TYPES.includes(f.type)) return 'Lejohen vetëm JPG, PNG, WEBP ose PDF.';
-  if (f.type === 'application/pdf' && f.size > MAX) return 'PDF-ja duhet të jetë deri në 5 MB.';
-  return '';
-}
-
-function validate() {
-  const f = form.elements;
-  let ok = true;
-  const req = (name, cond, msg) => { fieldError(form, name, cond ? '' : msg); if (!cond) ok = false; };
-  req('full_name', f.full_name.value.trim().split(/\s+/).length >= 2, 'Shkruani emrin dhe mbiemrin.');
-  req('id_number', /^\d{8,12}$/.test(f.id_number.value.replace(/\s/g, '')), 'Numri personal duhet të ketë vetëm shifra (zakonisht 10).');
-  req('phone', isPhone(f.phone.value), 'Shkruani një numër telefoni të vlefshëm.');
-  req('email', isEmail(f.email.value.trim()), 'Shkruani një email të vlefshëm.');
-  const program = form.querySelector('input[name="program"]:checked')?.value;
-  fieldError(form, 'program', program ? '' : 'Zgjidhni programin.'); if (!program) ok = false;
-  const fe = checkFile('front') || checkFile('back');
-  form.querySelectorAll('[data-drop]').forEach((d) => { if (!d.querySelector('input').files[0]) d.setAttribute('aria-invalid', 'true'); });
-  fieldError(form, 'files', fe); if (fe) ok = false;
-  fieldError(form, 'consent', f.consent.checked ? '' : 'Duhet të pajtoheni për të vazhduar.'); if (!f.consent.checked) ok = false;
-  if (!ok) return null;
-  return { full_name: f.full_name.value.trim(), id_number: f.id_number.value.replace(/\s/g, ''), phone: f.phone.value.trim(), email: f.email.value.trim(), program, message: f.message.value.trim() || null, consent: true };
-}
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const err = form.querySelector('[data-form-error]');
-  err.hidden = true;
-  const data = validate();
-  if (!data) { form.querySelector('[aria-invalid="true"], [data-error-for]:not([hidden])')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-  if (looksLikeBot(form, started)) { showDone(form); return; }
-  const btn = form.querySelector('button[type="submit"]');
-  btn.setAttribute('aria-busy', 'true');
-  try {
-    progress.textContent = 'Duke përgatitur dokumentet…';
-    const front = await compressImage(form.elements.front.files[0]);
-    const back = await compressImage(form.elements.back.files[0]);
-    if (front.size > MAX || back.size > MAX) throw new Error('size');
-    progress.textContent = 'Duke ngarkuar…';
-    const r = await submitApplication(data, { front, back });
-    if (r.offline) toast('Mënyra demo: lidhni Supabase te config.js që aplikimet të ruhen.');
-    showDone(form);
+    // Kopja e aplikantit ruhet automatikisht si foto
+    downloadFile(files.jpg);
   } catch (ex) {
     console.error(ex);
     err.textContent = friendlyError(ex); err.hidden = false;
   } finally {
-    btn.removeAttribute('aria-busy'); progress.textContent = '';
+    btn.removeAttribute('aria-busy'); btn.disabled = false; progress.textContent = '';
   }
 });
-
-if (params.get('menyra') === 'online') setMode('online');
+document.querySelector('[data-save-photo]').addEventListener('click', savePhoto);
+document.querySelector('[data-save-pdf]').addEventListener('click', () => { if (files) downloadFile(files.pdf); });
