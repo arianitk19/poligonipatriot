@@ -1,6 +1,7 @@
 import { getProduct, getProducts, getCategories, mediaUrl } from '../data.js';
 import { esc, priceLabel, productCard, whatsappLink } from '../ui.js';
 import { getSettings } from '../data.js';
+import { bfDeal, BF_END_LABEL } from '../black-friday-data.js';
 
 const slug = new URLSearchParams(location.search).get('p');
 const box = document.querySelector('[data-product]');
@@ -26,7 +27,10 @@ function render(p, cat, settings) {
     ['Marka', p.brand], ['Kategoria', cat?.name], ['Kalibri', p.caliber], ['Karikatori', p.capacity ? `${p.capacity} fishekë` : null],
     ['Gjatësia e tytës', p.barrel_length], [p.category_slug === 'mirembajtje' ? 'Sasia' : 'Pesha', p.weight], ['Mekanizmi', p.action], ['Origjina', p.origin],
   ].filter(([, v]) => v);
-  const msg = `Përshëndetje, jam i interesuar për ${p.name}. A është në dispozicion dhe sa kushton?\n${location.href}`;
+  const bf = bfDeal(p.slug);
+  const msg = bf
+    ? `Përshëndetje! Jam i interesuar për ofertën Black Friday: ${p.name}, ${bf.price} € (nga ${bf.old} €). A është në dispozicion?\n${location.href}`
+    : `Përshëndetje, jam i interesuar për ${p.name}. A është në dispozicion dhe sa kushton?\n${location.href}`;
   const tel = (settings.phone || '+38349394850').replace(/\s/g, '');
 
   box.innerHTML = `
@@ -43,10 +47,14 @@ function render(p, cat, settings) {
         <p class="text-steel-400">${esc(p.brand || '')}</p>
         <h1 class="t-h1 mt-2 pd-title${Math.max(...p.name.split(/\s+/).map((w) => w.length)) > 11 ? ' is-long' : ''}">${esc(p.name)}</h1>
         <p class="mt-5 flex flex-wrap items-center gap-3">
-          <span class="t-spec text-2xl font-semibold">${esc(priceLabel(p))}</span>
+          ${bf ? `<span class="t-spec text-2xl font-semibold"><s class="text-steel-400 font-normal text-lg mr-2">${esc(bf.old)} €</s><span class="text-patriot">${esc(bf.price)} €</span></span>` : `<span class="t-spec text-2xl font-semibold">${esc(priceLabel(p))}</span>`}
           <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${p.in_stock === false ? 'bg-steel-800 text-steel-300' : 'bg-white/10 text-bone'}">${p.in_stock === false ? 'Pa stok momentalisht' : 'Në dispozicion'}</span>
         </p>
       </div>
+      ${bf ? `<a href="/black-friday/" class="flex items-center gap-4 rounded-lg p-4 bg-patriot/10 ring-1 ring-patriot/50 hover:bg-patriot/15 transition-colors">
+        <span class="rounded bg-patriot px-2.5 py-1.5 text-sm font-extrabold text-white">−${bf.pct}%</span>
+        <span class="text-sm"><b class="block text-bone">Black Friday: kurseni ${esc(bf.save)} €</b><span class="text-steel-300">Ofertë e limituar deri më ${BF_END_LABEL}</span></span>
+      </a>` : ''}
       ${specs.length ? `<dl class="border-t border-steel-800">${specs.map(([k, v]) => `<div class="spec-row"><dt>${esc(k)}</dt><dd class="${/Kalibri|Karikatori|Pesha|Gjatësia/.test(k) ? 't-spec' : ''}">${esc(v)}</dd></div>`).join('')}</dl>` : ''}
       ${p.description ? `<div class="prose-pp">${esc(p.description).split(/\n{2,}/).map((x) => `<p>${x.replace(/\n/g, '<br>')}</p>`).join('')}</div>` : ''}
       <div class="grid sm:grid-cols-2 gap-3">
